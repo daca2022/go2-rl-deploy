@@ -9,7 +9,7 @@
 | [Informe PDF](Informe-Proyecto-Final.pdf) | Introducción, metodología, resultados y conclusiones. |
 | [Informe LaTeX](Informe-Proyecto-Final.tex), [estilo](Estilo-Go2.tex) y [bibliografía](Referencias.bib) | Fuentes editables con nueve referencias. |
 | [Guion oral PDF](Guion-15-min.pdf) y [fuente](Guion-15-min.tex) | Plan de 15 minutos alineado a los puntajes de la exposición. |
-| [Flujo experimental](Flujo-Experimental.drawio) | Dos páginas editables para control, entrenamiento y evaluación. |
+| [Flujo experimental](Flujo-Experimental.drawio) | Tres páginas editables para el lazo de control, el diseño experimental y la selección y validación de A2. |
 | [Video A0/P0](Demo-A0-U1600-20s.mp4) y [fotograma](Fotograma-A0-U1600.png) | Trote de desarrollo de 20 s en MuJoCo CPU. |
 | [Episodios A0](Episodios-A0.csv) y [huellas](Fuentes-de-datos.json) | Aprobación, caída, duración, RMSE y emparejamiento por consigna, escenario y semilla. |
 | [Figura por escenario](Resultados-por-escenario.png) y [figura de error de avance](Error-de-avance.png) | Gráficos a partir de los episodios comunes. |
