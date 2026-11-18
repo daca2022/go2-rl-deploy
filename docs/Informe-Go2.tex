@@ -1,0 +1,181 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern,microtype}
+\usepackage[margin=21mm,headheight=15pt]{geometry}
+\usepackage{booktabs,tabularx,array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor,fancyhdr}
+\definecolor{ink}{HTML}{12273A}
+\definecolor{accent}{HTML}{12675F}
+\definecolor{mist}{HTML}{EAF4F4}
+\definecolor{muted}{HTML}{485F73}
+\usepackage[colorlinks=true,allcolors=accent,pdftitle={Unitree Go2 - Informe técnico},
+  pdfsubject={Locomoción A2/P0 por DDS y preparación del ensayo físico}]{hyperref}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{muted}LABORATORIO UNITREE GO2}
+\fancyhead[R]{\small\color{muted}18 NOV 2026}
+\fancyfoot[L]{\small\color{muted}Informe de entrega · A2/P0}
+\fancyfoot[R]{\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{.35pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.6em}
+\setlength{\fboxsep}{10pt}
+\renewcommand{\arraystretch}{1.24}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\statusbox}[1]{\colorbox{mist}{\parbox{\dimexpr\linewidth-2\fboxsep}{#1}}}
+\newcommand{\repo}{https://github.com/daca2022/go2-rl-deploy}
+\newcommand{\sectionpage}[2]{\vspace*{.3em}{\color{accent}\small\bfseries #1\par}\vspace{.65em}{\LARGE\bfseries\color{ink} #2\par}\vspace{.85em}}
+\begin{document}
+\color{ink}
+\vspace*{1.1em}
+{\color{accent}\small\bfseries INFORME TÉCNICO DE ENTREGA\par}
+\vspace{1.2em}
+{\fontsize{38}{42}\selectfont\bfseries Unitree Go2\par}
+\vspace{.55em}
+{\Large Locomoción con GRU, MuJoCo y Ethernet\par}
+\vspace{1.1em}
+{\color{muted}A2/P0 · actualización 2.000 · semilla 7\par}
+\vspace{2em}
+
+\statusbox{\textbf{Estado al 18 de noviembre de 2026.} El paquete de software está disponible públicamente. Se verificó el recorrido DDS con cuatro consignas en MuJoCo y se probó el panel de escritorio. La aceptación física en el Go2 está pendiente.}
+
+\vspace{.8em}
+\subsection*{Qué se entrega}
+El repositorio incluye un panel local para Ubuntu 22.04, el actor TorchScript y su planta MuJoCo, el adaptador DDS, la plantilla de banco y los scripts de instalación. La entrega documental vincula el informe, el diagrama editable y la bitácora de ensayos. El panel abre el simulador y el actor, muestra errores del proceso y guarda los CSV en \texttt{pruebas/}.
+
+\begin{tabularx}{\linewidth}{@{}p{.24\linewidth}L@{}}
+\toprule
+\textbf{Modo del panel} & \textbf{Acción disponible} \\
+\midrule
+MuJoCo & Ejecuta el GRU, visualiza la locomoción y guarda la velocidad simulada. \\
+Telemetría / sombra & Lee sensores del Go2. En sombra calcula y guarda los objetivos del actor sin publicarlos. \\
+Pulso con Sport & Usa el controlador de fábrica para un movimiento breve en piso. \\
+Pulso GRU en banco & Envía objetivos articulares limitados con el robot sostenido, perfil calibrado y Sport inactivo. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{.7em}
+\subsection*{Alcance del checkpoint}
+El actor es una GRU de 128 unidades entrenada con PPO y control P0. La actualización 2.000 se eligió por la evidencia interna de trote al retroceder en una pendiente de $+1^\circ$. En esa revisión, la actualización 2.000 cumplió el criterio de trote en cinco repeticiones y la 2.800 completó las cinco sin caída, con cero aprobaciones del monitor de trote. Las repeticiones usan reinicios deterministas. El checkpoint de entrega y la evaluación reservada de 140 episodios se registran por separado.
+
+\vfill
+\href{\repo}{Repositorio público de la entrega}\quad·\quad
+\href{https://github.com/daca2022/go2-rl-deploy/blob/main/docs/Panel-Go2.md}{Guía del panel}
+
+\newpage
+\sectionpage{01 · DISEÑO}{Arquitectura y flujo de mensajes}
+
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={draw=accent,fill=mist,rounded corners=3pt,text width=4.1cm,align=center,minimum height=15mm, inner sep=7pt,font=\small},
+  bus/.style={-{Stealth[length=2mm]},draw=accent,thick},
+  note/.style={font=\scriptsize,fill=white,inner sep=2pt,align=center}
+]
+\node[box] (actor) at (0,0) {\textbf{PC de prueba}\\ Panel · actor GRU · P0};
+\node[box] (sim) at (9,0) {\textbf{MuJoCo CPU}\\ DDS 19 · interfaz \texttt{lo}};
+\draw[bus] ([yshift=2.5mm]actor.east) -- node[note,above]{\texttt{rt/lowcmd}} ([yshift=2.5mm]sim.west);
+\draw[bus] ([yshift=-2.5mm]sim.west) -- node[note,below]{\texttt{rt/lowstate}} ([yshift=-2.5mm]actor.east);
+\node[box] (sdk) at (0,-2.6) {\textbf{PC Ubuntu 22.04}\\ SDK2 Python · Ethernet};
+\node[box] (go) at (9,-2.6) {\textbf{Go2 físico}\\ DDS 0 · Sport o banco GRU};
+\draw[bus] ([yshift=2.5mm]sdk.east) -- node[note,above]{Sport RPC / \texttt{rt/lowcmd}} ([yshift=2.5mm]go.west);
+\draw[bus] ([yshift=-2.5mm]go.west) -- node[note,below]{\texttt{rt/lowstate}\\ \texttt{rt/sportmodestate}} ([yshift=-2.5mm]sdk.east);
+\end{tikzpicture}
+\end{center}
+
+\subsection*{De sensores a objetivos articulares}
+El adaptador construye 47 entradas a partir de giroscopio, gravedad proyectada, consigna, posición y velocidad articular, acción anterior y fase de marcha. Ejecuta la inferencia de la GRU cada 20 ms y transforma sus 12 salidas en objetivos de posición P0. Al inicio de cada ensayo se reinicia la memoria recurrente.
+
+El orden del actor es FL, FR, RL, RR. Los índices del SDK se agrupan como FR, FL, RR, RL. El adaptador convierte ambos órdenes y aplica, para el modo banco, la calibración de signo y cero de cada articulación. Los mensajes usan el CRC del SDK. En banco se intenta publicar cada 2 ms. La frecuencia efectiva y los plazos se comprueban en la PC de ensayo bajo carga.
+
+\begin{tabularx}{\linewidth}{@{}p{.29\linewidth}p{.16\linewidth}L@{}}
+\toprule
+\textbf{Interfaz} & \textbf{Dirección} & \textbf{Uso} \\
+\midrule
+\texttt{rt/lowstate} & Go2 $\to$ PC & IMU, posición, velocidad y torque estimado de las juntas. \\
+\texttt{rt/lowcmd} & PC $\to$ Go2 & Objetivos P0 durante el pulso GRU en banco. \\
+\texttt{rt/sportmodestate} & Go2 $\to$ PC & Telemetría disponible con el servicio Sport. \\
+Sport RPC & PC $\to$ Go2 & Llamadas \texttt{Move} y \texttt{StopMove} del ensayo de fábrica. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{.65em}
+El cliente Python opera por DDS desde la PC. Si el Go2 usa Ubuntu 20.04 con ROS 2 Foxy, la instalación descrita se realiza igualmente en la PC Ubuntu 22.04. El SDK recibe la interfaz Ethernet del equipo, en el dominio físico 0.
+
+\newpage
+\sectionpage{02 · EVIDENCIA}{Resultados en MuJoCo}
+
+Se ejecutaron cuatro episodios de 20 segundos, 1.000 ciclos DDS por consigna. El actor se cargó desde el archivo distribuido y el puente usó el modelo P0 compilado de MuJoCo 3.5.0. Las consignas se expresan respecto a la base en $(v_x, v_y, \omega_z)$, con velocidades lineales en m/s y giro en rad/s.
+
+\begin{tabularx}{\linewidth}{@{}L c r r r@{}}
+\toprule
+\textbf{Consigna} & \textbf{Velocidad pedida} & \textbf{Error plano} & \textbf{Error de giro} & \textbf{Caídas} \\
+\midrule
+Avance & $(0{,}30;0;0)$ & 0,0620 & 0,0236 & 0 \\
+Retroceso & $(-0{,}20;0;0)$ & 0,0675 & 0,0241 & 0 \\
+Lateral izquierdo & $(0;0{,}20;0)$ & 0,0948 & 0,0189 & 0 \\
+Giro & $(0;0;0{,}30)$ & 0,0176 & 0,0452 & 0 \\
+\bottomrule
+\end{tabularx}
+
+El error en plano es el RMSE combinado de $v_x$ y $v_y$. Su unidad es m/s. El error de giro es el RMSE de $\omega_z$ en rad/s. Las cuatro pruebas quedan dentro de 0,10 m/s y 0,15 rad/s respectivamente. Estos ensayos son diagnósticos de la integración y no sustituyen los 140 episodios reservados. En una reproducción local del lateral, la velocidad media hacia el lado fue de aproximadamente 0,110 m/s para una consigna de 0,20 m/s.
+
+\subsection*{Comprobaciones adicionales}
+\begin{tabularx}{\linewidth}{@{}p{.28\linewidth}L@{}}
+\toprule
+\textbf{Comprobación} & \textbf{Resultado observado} \\
+\midrule
+Exportación de la GRU & Se comparó la inferencia exportada con el actor original durante 32 pasos recurrentes. \\
+Pérdida de comandos en simulación & El puente pidió dos ciclos. Tras finalizar el actor al primer ciclo, esperó y terminó por plazo sin avanzar el segundo. \\
+Guardas de banco & Con endpoints simulados, Sport activo bloqueó la publicación. La pérdida de estado cortó los objetivos de posición y activó el intento de amortiguación. \\
+Panel local & Se ejecutó DDS lateral durante 20 s desde una instalación limpia del entorno Python en el laboratorio. Se verificaron el CSV, el botón Detener y los bloqueos de inicio. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{.65em}
+\statusbox{\textbf{Evidencia física pendiente.} La conexión Ethernet, la calibración y las respuestas del controlador se deben medir en la unidad de destino. El cierre de software corresponde al checkpoint 2.000 incluido en esta entrega. La continuación de entrenamiento conserva su propio registro y queda fuera de estas cifras.}
+
+\vspace{.65em}
+\href{https://github.com/daca2022/go2-rl-deploy/blob/main/docs/Prueba-A2-DDS.json}{Resultados DDS}
+\quad·\quad
+\href{https://github.com/daca2022/go2-rl-deploy/blob/main/model/manifest.json}{Manifiesto y huellas de integridad}
+
+\newpage
+\sectionpage{03 · PUESTA EN MARCHA}{Instalación y aceptación física}
+
+\subsection*{Abrir el panel en Ubuntu 22.04}
+\begin{verbatim}
+sudo apt update
+sudo apt install git
+git clone https://github.com/daca2022/go2-rl-deploy.git
+cd go2-rl-deploy
+bash install-panel.sh
+bash abrir-panel.sh
+\end{verbatim}
+Si el repositorio ya existe, usa \texttt{git pull --ff-only} dentro de su carpeta. Para sesiones posteriores, inicia con \texttt{bash abrir-panel.sh}. Primero repite un ensayo MuJoCo desde la ventana. Luego conecta el cable Ethernet de desarrollo. Si la unidad usa la subred estándar, configura \texttt{192.168.123.99/24} en la interfaz de la PC, con gateway y DNS vacíos para ese enlace.
+
+\subsection*{Secuencia de comprobación en la unidad de destino}
+\begin{enumerate}
+\item \textbf{Telemetría.} Con el Go2 quieto, registra ticks, CRC, posición, velocidad, torque estimado y estado de la IMU. Comprueba que el enlace transporte muestras recientes.
+\item \textbf{Sombra.} Calcula objetivos sin emitir comandos. Verifica referencia, sentido y cero articular, marco de la IMU y coherencia de señales con el perfil local.
+\item \textbf{Sport en piso.} Con mando listo, área despejada y Go2 de pie, usa el pulso breve de fábrica para comprobar respuesta y parada observada.
+\item \textbf{GRU en banco.} Con el robot sostenido, patas libres, perfil calibrado y Sport inactivo, valida el paro físico y la reacción ante pérdida de enlace. Registra objetivos, articulaciones, torque estimado y frecuencia real durante el pulso de hasta 0,5 s.
+\item \textbf{GRU en piso.} La primera marcha requiere comprobar la transición de postura a control, repetir la prueba de parada y medir velocidad o distancia con referencia externa si Sport está apagado.
+\end{enumerate}
+
+El botón \textbf{Detener} pide a los procesos terminar por sus rutas normales. Si se pierde el enlace, el mando físico y el procedimiento de parada de la unidad son la referencia del operador. Cada prueba deja CSV y registros en \texttt{pruebas/}. Anota en la bitácora firmware, consigna, resultados, incidencias y confirmación física cuando corresponda.
+
+\subsection*{Archivos y referencias}
+\href{https://github.com/daca2022/go2-rl-deploy/blob/main/docs/Go2-Entrega.drawio}{Diagrama editable}
+\quad·\quad\href{https://github.com/daca2022/go2-rl-deploy/blob/main/docs/Bitacora-Go2.xlsx}{Bitácora Excel}
+\quad·\quad\href{https://github.com/daca2022/go2-rl-deploy/blob/main/docs/Adaptador-A2-Go2.md}{Guía del adaptador}
+
+\href{https://github.com/unitreerobotics/unitree_sdk2_python}{SDK2 Python}
+\quad·\quad\href{https://github.com/unitreerobotics/unitree_ros2}{Configuración Ethernet Unitree}
+\quad·\quad\href{https://github.com/unitreerobotics/unitree_mujoco}{Puente Unitree MuJoCo}
+
+\end{document}

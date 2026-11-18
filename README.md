@@ -1,6 +1,14 @@
 # Unitree Go2 por Ethernet
 Guía de puesta en marcha desde Ubuntu 22.04 · A2/P0 · GRU de 128
 
+## Informe técnico de entrega
+
+- [Informe PDF](docs/Informe-Go2.pdf) y [fuente LaTeX](docs/Informe-Go2.tex)
+- [Draw.io de arquitectura y ensayos](docs/Go2-Entrega.drawio)
+- [Bitácora Excel](docs/Bitacora-Go2.xlsx) y [resultados en MuJoCo por DDS](docs/Prueba-A2-DDS.json)
+
+El fuente LaTeX es autocontenido. Para regenerar el PDF con TeX Live, ejecuta `latexmk -pdf docs/Informe-Go2.tex` desde el repositorio.
+
 ## Inicio rápido con el panel
 
 En Ubuntu 22.04 abre una terminal en el escritorio de la PC del robot. Instala Git si hace falta. El panel abre localmente y funciona con CPU.
