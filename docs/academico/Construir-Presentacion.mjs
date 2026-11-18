@@ -133,15 +133,16 @@ function label(s,title,body,x,y,w) {
     ["Checkpoint","Trote en plano","20 s sin caída en plano","Reto de desarrollo"],
     ["U2400","20 de 20","20 de 20","5 de 5 en +1°"],
     ["U2800","10 de 20","20 de 20","0 de 5 en +5°"],
-    ["U3200","15 de 20","20 de 20","1 de 5 en masa +10 %"]
+    ["U3200","15 de 20","20 de 20","1 de 5 en masa +10 %"],
+    ["U3600","15 de 20","20 de 20","3 de 5 con retardo\n20 ms"]
   ];
   rows.forEach((row,i)=>{
-    const y=220+68*i; rect(s,66,y,1148,63,i===0?C.navy:C.white);
-    row.forEach((value,j)=>text(s,value,xs[j]+13,y+10,widths[j]-24,50,i===0?20:26,
+    const y=214+57*i; rect(s,66,y,1148,53,i===0?C.navy:C.white);
+    row.forEach((value,j)=>text(s,value,xs[j]+13,y+4,widths[j]-24,45,i===0?20:25,
       {bold:i===0||j<2,color:i===0?C.white:C.ink}));
   });
-  text(s,"U3200 recuperó el avance. El lateral registró 0,121 m/s de RMSE con límite de 0,10.",66,537,1120,63,27,{color:C.quiet});
-  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5° y masa +10 % cambian de condición. U2400 conserva el mejor plano en tres revisiones completas. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
+  text(s,"U3600 redujo el error de avance a 0,071 m/s. El lateral sigue fuera del límite de 0,10.",66,537,1120,63,27,{color:C.quiet});
+  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5°, masa +10 % y retardo de 20 ms cambian de condición. U3600 aprobó 3/5 con retardo y completó los cinco horizontes. U2400 conserva el único filtro plano completo en cuatro revisiones. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
 }
 {
   const s=slide("Qué verificamos además del trote","Tres pruebas CPU, con alcance distinto de la validación final.");
@@ -159,7 +160,7 @@ function label(s,title,body,x,y,w) {
   text(s,"Campaña con 1 de 6 entrenamientos y 0 validaciones verificadas.",65,516,1140,38,24,{color:C.quiet});
   text(s,"Siguiente hito",65,578,255,36,26,{bold:true,color:C.teal});
   text(s,"Cerrar las revisiones de la continuación y elegir el checkpoint para la validación reservada.",342,568,865,63,24);
-  note(s,"13:00–15:00. Mantener el corte de la continuación en U3200. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Los 12 cambios conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
+  note(s,"13:00–15:00. Mantener el corte de la continuación en U3600 y sus 100 episodios. Faltan U4000 y el recibo final. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Los 12 cambios conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
 }
 {
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");
