@@ -104,7 +104,7 @@ function label(s,title,body,x,y,w) {
   label(s,"Patrón de apoyos","El monitor comprueba el\npatrón de trote registrado.",842,237,340);
   text(s,"7 condiciones y 138 episodios comunes para E1 y E5",65,474,1140,52,32,{bold:true,color:C.teal});
   text(s,"Plano, fricción, empujón, ruido, masa con retardo, terreno rugoso y pendiente.",65,551,1140,42,23);
-  note(s,"5:50–7:30. Definir RMSE. Explicar el emparejamiento por consigna, condición y semilla de evaluación. Hubo 140 escenarios programados y 138 comunes. Una semilla de entrenamiento limita la generalización.",[source+"/Episodios-A0.csv"]);
+  note(s,"5:50–7:30. Definir RMSE. Explicar el emparejamiento por consigna, condición y semilla de evaluación. Hubo 140 episodios programados y 138 comunes. Una semilla de entrenamiento limita la generalización.",[source+"/Episodios-A0.csv"]);
 }
 {
   const s=slide("El Go2 sigue consignas en MuJoCo","Dos reproducciones de desarrollo de 20 s.");
@@ -119,11 +119,11 @@ function label(s,title,body,x,y,w) {
 {
   const s=slide("Cada receta destaca en escenarios distintos","Resultados de E1 y E5 sobre los mismos 138 episodios.");
   await pic(s,"Resultados-por-escenario.png",66,209,720,391,"Tasas de aprobación por escenario para E1 y E5");
-  text(s,"100 frente a 98",825,244,362,69,40,{bold:true,color:C.teal});
+  text(s,"100/138 · 98/138",825,244,362,69,37,{bold:true,color:C.teal});
   text(s,"E1 tuvo menor error de avance en plano y con masa y retardo.",825,337,355,96,24);
   text(s,"E5 obtuvo 8/18 en terreno rugoso. E1 obtuvo 5/18.",825,451,355,93,24);
   text(s,"Ambos quedaron en 0/20 en pendiente de 5°.",825,557,355,61,23,{color:C.quiet});
-  note(s,"9:30–11:10. Mostrar ventaja local, no superioridad universal. El error mediano de avance en plano fue 0,0608 para E1 y 0,0743 m/s para E5. Bajo masa y retardo quedó en 0,0917 y 0,1032. Los incrementos son parecidos.",[source+"/Episodios-A0.csv",source+"/Resultados-por-escenario.png"]);
+  note(s,"9:30–11:10. En los 138 pares hubo 94 dobles aprobados, 34 dobles fallos, 6 aprobados solo por E1 y 4 solo por E5. Los pares de evaluación comparan actores de una sola semilla de entrenamiento. El error mediano de avance en plano fue 0,0608 para E1 y 0,0743 m/s para E5. Bajo masa y retardo quedó en 0,0917 y 0,1032. Los incrementos son parecidos.",[source+"/Episodios-A0.csv",source+"/Resultados-por-escenario.png"]);
 }
 {
   const s=slide("U2400 conserva el mejor plano observado","Continuación A2/P0 desde U2000. Corte del 18 de noviembre de 2026.");
@@ -145,11 +145,11 @@ function label(s,title,body,x,y,w) {
   note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5°, masa +10 % y retardo de 20 ms cambian de condición. U3600 aprobó 3/5 con retardo y completó los cinco horizontes. U2400 conserva el único filtro plano completo en cuatro revisiones. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
 }
 {
-  const s=slide("Qué verificamos además del trote","Tres pruebas CPU, con alcance distinto de la validación final.");
+  const s=slide("Qué verificamos además del trote","Pruebas de ingeniería en MuJoCo CPU.");
   const rows=[
     ["Maestro y alumno","48 etiquetas y 2 actualizaciones del alumno.\nDos episodios de 0,48 s. Evaluación oficial pendiente."],
     ["Handstand","Pose colocada estable 3,155 s. Entrada fallida a los 0,700 s.\nFaltan la entrada y el retorno en un mismo episodio."],
-    ["Cambio de entrada","12 cambios con el mismo actor de trote y continuidad de GRU.\nLa política de cuatro habilidades sigue pendiente."]
+    ["Otras habilidades","Los ensayos de sentarse y pronking terminaron sin caída.\nLos monitores registraron fallo de habilidad en ambos."]
   ];
   rows.forEach(([title,body],i)=>{
     const y=217+i*91;
@@ -160,7 +160,7 @@ function label(s,title,body,x,y,w) {
   text(s,"Campaña con 1 de 6 entrenamientos y 0 validaciones verificadas.",65,516,1140,38,24,{color:C.quiet});
   text(s,"Siguiente hito",65,578,255,36,26,{bold:true,color:C.teal});
   text(s,"Cerrar las revisiones de la continuación y elegir el checkpoint para la validación reservada.",342,568,865,63,24);
-  note(s,"13:00–15:00. Mantener el corte de la continuación en U3600 y sus 100 episodios. Faltan U4000 y el recibo final. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Los 12 cambios conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
+  note(s,"13:00–15:00. Mantener el corte de la continuación en U3600 y sus 100 episodios. Faltan U4000 y el recibo final. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Sentarse duró 6 s sin sostén válido y pronking 20 s con cero vuelos válidos. Se verificaron 5.200 subpasos entre ambos episodios. Los 12 cambios de entrada conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
 }
 {
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");

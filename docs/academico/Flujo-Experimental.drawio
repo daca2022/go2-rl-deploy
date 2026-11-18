@@ -98,7 +98,7 @@
         <mxCell id="vr" parent="1" edge="1" source="eval" target="score" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="note" value="La evaluación de E5 contiene 140 episodios. E1 y E5 se comparan sobre los 138 presentes en ambas corridas." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+        <mxCell id="note" value="138 pares comunes. Ambos aprobaron 94 y fallaron 34. Solo E1 aprobó 6 y solo E5 aprobó 4." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
           <mxGeometry x="40" y="444" width="1015" height="30" as="geometry" />
         </mxCell>
       </root>

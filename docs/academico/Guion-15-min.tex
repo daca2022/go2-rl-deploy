@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 \input{Estilo-Go2}
 \hypersetup{pdftitle={Guion de 15 minutos - Unitree Go2}}
 \begin{document}
@@ -23,11 +23,13 @@
 \end{tabularx}
 
 \section*{Guía para la demostración}
-\textbf{Video listo para reproducir.} Abre los MP4 A0 y A2 antes de la exposición. Durante la reproducción identifica los apoyos diagonales y la consigna de avance de 0,30 m/s. El clip es A0/P0 U1600 y los resultados comparativos del informe son de U2000.
+\textbf{Video listo para reproducir.} Muestra los apoyos diagonales y la consigna de avance de 0,30 m/s. A0/P0 U1600 muestra avance y A2/P0 U2000 muestra lateral. La comparación E1–E5 usa A0/P0 U2000.
 
-\textbf{Opción en vivo.} En el repositorio \texttt{go2-rl-deploy} ya instalado, ejecuta \texttt{bash abrir-panel.sh}. Selecciona el modo MuJoCo y la consigna Avance. El panel ejecuta A2/P0 y guarda el CSV de la prueba. Ten preparado el video local si el entorno gráfico tarda en abrir.
+\textbf{Opción en vivo.} Desde el repositorio instalado, ejecuta \texttt{bash abrir-panel.sh}. Elige MuJoCo y Avance. El panel guarda el CSV. Ten listos los MP4 locales.
 
 \section*{Preguntas que conviene ensayar}
+\textbf{¿La diferencia global basta para elegir receta?} E1 aprobó seis pares exclusivos y E5 cuatro. Ambas políticas usaron la semilla de entrenamiento 7.
+
 \textbf{¿Por qué E5 tomó más horas?} Dedicó unas cuatro horas a pruebas internas con pesos congelados. Los dos entrenaron con el mismo número de transiciones.
 
 \textbf{¿Por qué E1 gana en masa y retardo?} En avance, su RMSE nominal es 0,0608 m/s y sube a 0,0917. El de E5 va de 0,0743 a 0,1032. Los aumentos son parecidos y solo E5 supera el límite de 0,10.

@@ -30,6 +30,8 @@ El plan maestro conserva 42 de 56 entradas cerradas. Quedan la validación reser
 
 En Handstand, una pose colocada sostuvo el apoyo delantero durante 3,155 s. La entrada desde cuatro apoyos falló a los 0,700 s por contacto de las pantorrillas traseras. Un perfil posterior trasladó el 100 % de la carga medida en los pies a las delanteras durante 0,100 s, con 14,7 mm de despeje trasero, y terminó por contacto delantero a los 1,815 s. Quedan por demostrar entrada, sostén y retorno en un mismo episodio.
 
+Los evaluadores de sentarse y pronking conservaron 5.200 subpasos reproducibles en dos episodios nativos con el actor de trote. Sentarse llegó a 6 s sin lograr el sostén y pronking llegó a 20 s con cero vuelos válidos. Los dos monitores registraron fallo de habilidad. Las políticas específicas y los ensayos formales quedan pendientes.
+
 La prueba de transiciones conservó la continuidad de la física y de la GRU en 12 cambios entre entradas de condición. Todos ejecutaron el mismo actor de trote. La política entrenada para cuatro habilidades y sus transiciones siguen pendientes.
 
 El informe de campaña del panel conserva una instantánea verificada del entrenamiento original A2/P0, con una de seis celdas entrenada y cero validaciones verificadas. La continuación hasta U3600 conserva el recibo pendiente indicado arriba.

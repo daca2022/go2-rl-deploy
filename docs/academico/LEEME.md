@@ -8,6 +8,7 @@
 |---|---|
 | [Informe PDF](Informe-Proyecto-Final.pdf) | Introducción, metodología, resultados y conclusiones. |
 | [Informe LaTeX](Informe-Proyecto-Final.tex), [estilo](Estilo-Go2.tex) y [bibliografía](Referencias.bib) | Fuentes editables con nueve referencias. |
+| [Rúbrica y evidencia](Rubrica-y-Evidencia.md) | Puntos, capítulos, diapositivas y material de respaldo. |
 | [Guion oral PDF](Guion-15-min.pdf) y [fuente](Guion-15-min.tex) | Plan de 15 minutos alineado a los puntajes de la exposición. |
 | [Flujo experimental](Flujo-Experimental.drawio) | Tres páginas editables para el lazo de control, el diseño experimental y la selección y validación de A2. |
 | [Video A0/P0](Demo-A0-U1600-20s.mp4) y [fotograma](Fotograma-A0-U1600.png) | Trote de desarrollo de 20 s en MuJoCo CPU. |
@@ -35,6 +36,6 @@ Abre el archivo Draw.io en [diagrams.net](https://app.diagrams.net/) mediante **
 
 ## Mantener al día la entrega
 
-Publica los hitos después de verificar sus resultados y anota la fecha de corte en Corte-del-Laboratorio.md. Actualiza el anexo del informe y las diapositivas con los mismos números. GitHub conserva el historial. En Drive se reemplazan los archivos vigentes manteniendo sus enlaces, y se añaden los recursos nuevos como archivos separados. El salón de presentación puede abrirse sin conexión si se descargan el PPTX y los dos MP4.
+Cada publicación parte de evidencia verificable y queda fechada en Corte-del-Laboratorio.md. Actualiza primero los datos y luego el informe, la presentación y los diagramas que dependan de ellos. Abre los archivos generados antes de publicar. GitHub conserva el historial. En Drive, reemplaza los archivos vigentes en sus mismos enlaces y añade los nuevos por separado. Coteja la huella SHA-256 de ambas copias públicas con la de cada archivo local y registra el commit. Descarga el PPTX y los dos MP4 para exponer sin conexión.
 
 El constructor editable de la presentación es Construir-Presentacion.mjs. Usa el paquete @oai/artifact-tool y las imágenes de esta carpeta. El PDF de diapositivas se obtiene exportando el PPTX. El README de la raíz enlaza esta entrega y el panel de simulación.

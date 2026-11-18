@@ -100,7 +100,7 @@ Se contabilizaron las caídas por separado y se retuvo el tiempo hasta el final 
 \footnotesize\textbf{Figura 3.} Aprobación por escenario. Se muestran los numeradores y denominadores del conjunto común.
 \end{center}
 
-\textbf{Resultado global.} E1 logró 100/138 y registró cinco caídas. E5 logró 98/138 y registró diez caídas. El registro completo de E5 contiene 99/140. Los dos episodios adicionales se ejecutaron en terreno rugoso: aprobó el giro y falló el lateral. Los dos entrenamientos lograron 20/20 por separado en plano, baja fricción, empujón y ruido.
+\textbf{Resultado global.} E1 logró 100/138 y registró cinco caídas. E5 logró 98/138 y registró diez caídas. El registro completo de E5 contiene 99/140. Los dos episodios adicionales se ejecutaron en terreno rugoso: aprobó el giro y falló el lateral. Los dos entrenamientos lograron 20/20 por separado en plano, baja fricción, empujón y ruido. De los 138 pares, ambos aprobaron 94 y ambos fallaron 34. Solo E1 aprobó seis y solo E5 aprobó cuatro.
 
 \textbf{Masa y retardo.} E1 aprobó 15/20 y E5 aprobó 10/20, ambos sin caídas en esa condición. El lateral quedó en 0/5 para los dos. La diferencia de cinco aprobados salió del avance. Con masa y retardo el RMSE mediano de avance subió \(0{,}0309\) m/s en E1 y \(0{,}0289\) m/s en E5. E1 partía con menor error en plano y conservó margen frente al umbral. E5 cruzó \(0{,}10\) m/s.
 
@@ -117,7 +117,7 @@ En pendiente de \(5^\circ\) ambas políticas registraron 0/20 aprobados. En retr
 \subsection{Qué explica la ventaja de la referencia}
 Los dos completaron el mismo número de transiciones, y ambos practicaron en plano. En masa y retardo, el menor error de E1 en plano explica que el deterioro mediano observado dejara el avance de E1 bajo el umbral. Cotejar las muestras internas ubica el origen de trayectorias diferentes antes del primer control: la primera acción y recompensa coinciden, el segundo paso presenta pequeñas diferencias de dinámica, y hacia U20 ya se separan las trayectorias. La implementación del despeje, la geometría y el reinicio son factores que se pueden separar en una ablación. Los registros actuales permiten ubicar cuándo divergieron y qué métricas cambian.
 
-Xie et al. \cite{xie2021} documentan casos de buena tolerancia de un cuadrúpedo entrenado sin aleatorización de dinámica. Engstrom et al. \cite{engstrom2020} muestran la sensibilidad de PPO a detalles de implementación. Henderson et al. \cite{henderson2018} sustentan la necesidad de variar semillas de entrenamiento antes de afirmar que una receta es superior. Estos trabajos orientan las hipótesis del proyecto.
+Xie et al. \cite{xie2021} documentan casos de buena tolerancia de un cuadrúpedo entrenado sin aleatorización de dinámica. Engstrom et al. \cite{engstrom2020} muestran la sensibilidad de PPO a detalles de implementación. Henderson et al. \cite{henderson2018} sustentan la necesidad de variar semillas de entrenamiento antes de afirmar que una receta es superior. Estos trabajos orientan las hipótesis del proyecto. Las cinco semillas de evaluación replican escenas para los dos actores ya entrenados. Ambos actores se obtuvieron con la misma y única semilla de entrenamiento (7), lo que limita la inferencia sobre la receta.
 
 \subsection{A2/P0 recurrente y demostración funcional}
 En una revisión interna con el límite lineal común de \(0{,}10\) m/s, U2000 y U2800 aprobaron 20/20 en plano. El RMSE lateral fue \(0{,}09481\) y \(0{,}09322\) m/s respectivamente. En retroceso sobre \(+1^\circ\), U2000 cumplió el monitor en 5/5 y U2800 en 0/5, aunque ambos completaron 5/5 sin caída. Las repeticiones fueron deterministas. Se eligió U2000 para exportar el actor y probarlo por DDS local en MuJoCo, con cuatro ensayos de 20 s, 1.000 decisiones por consigna y cero caídas.
@@ -187,6 +187,9 @@ Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, P
 
 \medskip
 \textbf{Handstand sobre las patas delanteras.} En MuJoCo CPU, el Go2 sostuvo durante 3,155 s una pose colocada como condición inicial, con control P0 constante y dinámica libre. El intento de entrada desde cuatro apoyos falló a los 0,700 s cuando ambas pantorrillas traseras tocaron el suelo. El evaluador rechazó el inicio colocado para acreditar la maniobra completa. Quedan por demostrar la entrada, el sostén y el retorno a cuatro apoyos en un mismo episodio. Un perfil posterior trasladó el 100 \% de la carga medida en los pies a las delanteras durante 0,100 s, con 14,7 mm de despeje trasero. Terminó por contacto delantero a los 1,815 s. Esta prueba estudia una habilidad candidata adicional.
+
+\medskip
+\textbf{Evaluadores de sentarse y pronking.} Se reprodujeron dos episodios nativos en MuJoCo CPU con un actor entrenado para trote. La prueba de sentarse duró 6 s sin caída y quedó sin sostén válido. La de pronking duró 20 s sin caída y registró cero vuelos válidos. Los dos monitores registraron fallo de habilidad.
 
 \medskip
 \textbf{Continuidad entre entradas de condición.} Se verificaron 12 cambios diagnósticos con el mismo actor A2/P0 de trote. La captura conservó el estado físico y la memoria GRU entre decisiones, con 3.840 subpasos físicos en total. Los cambios de entrada prueban la continuidad del recorrido. La política condicionada entrenada para cuatro habilidades y la evaluación de sus transiciones físicas siguen pendientes.
