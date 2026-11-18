@@ -144,13 +144,22 @@ function label(s,title,body,x,y,w) {
   note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5° y masa +10 % cambian de condición. U2400 conserva el mejor plano en tres revisiones completas. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
 }
 {
-  const s=slide("Qué queda demostrado","Locomoción en simulación y una campaña comparativa preparada.");
-  label(s,"Evidencia disponible","Videos A0 y A2, datos por episodio y\nmediciones de seguimiento reproducibles.",65,224,535);
-  label(s,"Campaña de seis combinaciones","1 entrenamiento CUDA verificado.\n140 episodios de validación por celda.",664,224,543);
-  rect(s,65,476,1150,1,C.line);
-  text(s,"Siguiente hito",65,510,300,39,28,{bold:true,color:C.teal});
-  text(s,"Completar las revisiones de la continuación y elegir el checkpoint para su validación reservada.",355,496,832,85,26);
-  note(s,"13:00–15:00. Cerrar con lo que funciona y lo que queda abierto. La campaña completa, las cuatro habilidades finales y las auditorías F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",drive]);
+  const s=slide("Qué verificamos además del trote","Tres pruebas CPU, con alcance distinto de la validación final.");
+  const rows=[
+    ["Maestro y alumno","48 etiquetas y 2 actualizaciones del alumno.\nDos episodios de 0,48 s. Evaluación oficial pendiente."],
+    ["Handstand","Pose colocada estable 3,155 s. Entrada fallida a los 0,700 s.\nFaltan la entrada y el retorno en un mismo episodio."],
+    ["Cambio de entrada","12 cambios con el mismo actor de trote y continuidad de GRU.\nLa política de cuatro habilidades sigue pendiente."]
+  ];
+  rows.forEach(([title,body],i)=>{
+    const y=217+i*91;
+    text(s,title,65,y,255,64,25,{bold:true,color:C.teal});
+    text(s,body,342,y,866,68,24);
+  });
+  rect(s,65,498,1150,1,C.line);
+  text(s,"Campaña con 1 de 6 entrenamientos y 0 validaciones verificadas.",65,516,1140,38,24,{color:C.quiet});
+  text(s,"Siguiente hito",65,578,255,36,26,{bold:true,color:C.teal});
+  text(s,"Cerrar las revisiones de la continuación y elegir el checkpoint para la validación reservada.",342,568,865,63,24);
+  note(s,"13:00–15:00. Mantener el corte de la continuación en U3200. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Los 12 cambios conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
 }
 {
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");

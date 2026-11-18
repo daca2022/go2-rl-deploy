@@ -1,6 +1,6 @@
 # Proyecto final de robótica avanzada
 
-**Empieza por el [informe PDF](Informe-Proyecto-Final.pdf) y la [presentación editable](Presentacion-Go2.pptx), con el [guion de 15 minutos](Guion-15-min.pdf).** Esta versión reúne pruebas en MuJoCo y la comparación A0/P0 E1–E5. Las métricas recurrentes A2/P0 pertenecen a revisiones internas y a una prueba de integración local.
+**Empieza por el [informe PDF](Informe-Proyecto-Final.pdf) y la [presentación editable](Presentacion-Go2.pptx), con el [guion de 15 minutos](Guion-15-min.pdf).** Esta versión reúne pruebas en MuJoCo y la comparación A0/P0 E1–E5. Las métricas recurrentes A2/P0 pertenecen a revisiones internas y a una prueba de integración local. El anexo añade diagnósticos CPU de maestro y alumno, Handstand y continuidad de entradas, con sus límites y resultados pendientes.
 
 ## Material de entrega
 

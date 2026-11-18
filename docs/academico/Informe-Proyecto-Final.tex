@@ -142,7 +142,7 @@ Se implementó y demostró locomoción del Go2 en un simulador dinámico, con ge
 
 E1 mantiene la referencia para avance bajo masa y retardo y estabilidad al girar en pendiente. E5 ofrece una mejora puntual en terreno rugoso y más tiempo de estabilidad al retroceder en pendiente. Al igualar transiciones, el tiempo adicional de E5 corresponde principalmente a revisiones internas. La diferencia de dos aprobados y la falta de réplicas de entrenamiento dejan abierta la elección de una receta general.
 
-El contraste causal propuesto parte del mismo checkpoint para dos ramas de igual presupuesto, conserva una en plano e incorpora pendiente leve efectiva en la otra. Se verificará el desempeño en plano y en pendiente en cortes emparejados. Para explicar la divergencia temprana desde cero se requiere otro contraste que aísle un cambio de entorno por vez y repita las semillas de entrenamiento. En una fase posterior, un maestro con estado privilegiado y un estudiante con observaciones disponibles podrían servir para investigar adaptación, como motiva la literatura de locomoción \cite{kumar2021}. La destilación y la comparación completa A0/A1/A2 con P0/T0 quedan fuera de los resultados demostrados en este informe.
+El contraste causal propuesto parte del mismo checkpoint para dos ramas de igual presupuesto, conserva una en plano e incorpora pendiente leve efectiva en la otra. Se verificará el desempeño en plano y en pendiente en cortes emparejados. Para explicar la divergencia temprana desde cero se requiere otro contraste que aísle un cambio de entorno por vez y repita las semillas de entrenamiento. En una fase posterior, un maestro con estado privilegiado y un estudiante con observaciones disponibles podrían servir para investigar adaptación, como motiva la literatura de locomoción \cite{kumar2021}. La calidad de la política destilada y la comparación completa A0/A1/A2 con P0/T0 siguen pendientes. El anexo documenta las primeras comprobaciones diagnósticas de maestro y alumno en CPU.
 
 \subsection*{Material reproducible}
 El CSV documenta los 278 episodios registrados junto con la marca de pertenencia al conjunto común. Se incluyen las huellas SHA-256 de origen, el script de figuras, el diagrama editable y el video A0. El repositorio público contiene el actor A2, su modelo dinámico, el panel y la guía de ejecución. Los anexos distinguen episodios de desarrollo, validación, prueba de integración y aceptación del equipo físico.
@@ -176,6 +176,22 @@ En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \
 Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. El entrenamiento original A2/P0 tiene un recibo CUDA verificado por 4.300.800 transiciones y 8 h 45 min de pared. Cada celda conserva su validación reservada pendiente. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.
 
 \href{\repo/tree/main/docs/academico}{Presentación, videos, datos e índice de reproducibilidad}
+
+\newpage
+\subsection*{Diagnósticos CPU de nuevas capacidades}
+\noindent\textbf{Integración nominal de PPO y GRU.} Un diagnóstico CPU inicializado desde A2/P0 U2400 llevó tres de cuatro mundos al horizonte natural de 20 s, con bootstrap mediante observación terminal y reinicio selectivo de la GRU. La validación reservada sigue pendiente.
+
+
+\textbf{Maestro privilegiado y alumno.} Un maestro con 57 entradas completó una actualización PPO en dos mundos físicos, con 48 transiciones y 192 subpasos. El alumno A0/P0 recibió 47 observaciones, usó 48 etiquetas archivadas y completó dos actualizaciones de destilación. Otro proceso recargó el alumno y reprodujo sus acciones. La evaluación diagnóstica posterior cubrió dos episodios de 24 decisiones, 0,48 s cada uno, sin caída durante ese intervalo. La recolección oficial por episodios, el costo total medido y la evaluación reservada de 20 s siguen pendientes. Estos ensayos comprueban la cadena de aprendizaje y recarga, con la calidad de locomoción aún por evaluar.
+
+\medskip
+\textbf{Handstand sobre las patas delanteras.} En MuJoCo CPU, el Go2 sostuvo durante 3,155 s una pose colocada como condición inicial, con control P0 constante y dinámica libre. El intento de entrada desde cuatro apoyos falló a los 0,700 s cuando ambas pantorrillas traseras tocaron el suelo. El evaluador rechazó el inicio colocado para acreditar la maniobra completa. Quedan por demostrar la entrada, el sostén y el retorno a cuatro apoyos en un mismo episodio. Un perfil posterior trasladó el 100 \% de la carga medida en los pies a las delanteras durante 0,100 s, con 14,7 mm de despeje trasero. Terminó por contacto delantero a los 1,815 s. Esta prueba estudia una habilidad candidata adicional.
+
+\medskip
+\textbf{Continuidad entre entradas de condición.} Se verificaron 12 cambios diagnósticos con el mismo actor A2/P0 de trote. La captura conservó el estado físico y la memoria GRU entre decisiones, con 3.840 subpasos físicos en total. Los cambios de entrada prueban la continuidad del recorrido. La política condicionada entrenada para cuatro habilidades y la evaluación de sus transiciones físicas siguen pendientes.
+
+\medskip
+\textbf{Consulta del informe de campaña.} La vista del panel presenta una instantánea verificada del entrenamiento original A2/P0 y las seis combinaciones programadas. Conserva una de seis celdas entrenada, cero validaciones verificadas y selección pendiente. Los controles de lectura y acceso se comprobaron en CPU y en Chrome. Los resultados de la continuación permanecen limitados al corte U3200 descrito en este anexo, con recibo final pendiente.
 
 \newpage
 \begingroup\small
