@@ -1,0 +1,7 @@
+cell,architecture,control,training_seed,descriptor_sha256,state,planned_training_transitions,measured_training_transitions,planned_validation_episodes,verified_validation_episodes,training_receipt_sha256,checkpoint_sha256,observed_wall_seconds,observed_disk_peak_bytes,observed_vram_upper_bytes,archive_wall_limit_seconds,archive_disk_limit_bytes,archive_vram_limit_bytes
+A0-P0,A0,P0,7,034c4ea05e70f171109695f652d802a8b1c24359fa8a1268642eed3fb4a8b01e,pending,4300800,,140,0,,,,,,,,
+A1-P0,A1,P0,7,ca0a7ca272c5db4b3a9967101139b1b2eb75734f1c000dc9f6ca3f04002e8ad7,pending,4300800,,140,0,,,,,,,,
+A2-P0,A2,P0,7,d46508086024f095b7642e2caefaa881639599ccd531a99ae96fee40b5ce962a,trained_awaiting_validation,4300800,4300800,140,0,26bc7ec2be06688bced13b06ed172947967333bf4ab637ae385a2dbf68337aeb,f10e654d23bfa98e1a6fb5e003d7b60499129b55d2ec1a03e51249e2fce3dce0,31526.105832976,1119055235,2238709760,43200,6442450944,10737418240
+A0-T0,A0,T0,7,9587ff0d8c1967ae16c15802a39b8c14946a0925bdfea4a41031952320f06d4a,pending,4300800,,140,0,,,,,,,,
+A1-T0,A1,T0,7,2c4888fd8c3a2a1900a5c75ecd20abdebfb8c4206b8c7e741bad5171f1a2f243,pending,4300800,,140,0,,,,,,,,
+A2-T0,A2,T0,7,23408e6b4ed009cc7ab35d0ae1604aa7fb653b93fd124ba061b325c5f4371b85,pending,4300800,,140,0,,,,,,,,

@@ -18,6 +18,9 @@ Los cortes de pendiente usan distintas inclinaciones. La selección A2 sigue abi
 
 El plan maestro conserva 41 de 56 entradas cerradas. Quedan la validación reservada, la comparación de calidad, las cuatro habilidades y la verificación final. Los lanzamientos GPU corresponden al operador.
 
+**Lectura formal de campaña.** El recibo del entrenamiento original A2/P0 verificó 31.526,11 s de pared total, incluidas las revisiones internas. El pico observado fue de 1.119.055.235 B de disco y 2.238.709.760 B de VRAM. La rama de continuación se registra aparte.
+
+- [Tabla de seis celdas](Campana-Progresiva-Celdas.csv) y [costes desde el recibo](Campana-Progresiva-Costes.csv)
 - [Datos de desarrollo A2](Desarrollo-A2-Continuacion.csv)
 - [Informe PDF](Informe-Proyecto-Final.pdf) y [presentación](Presentacion-Go2.pptx)
 - [Carpeta pública de Drive](https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS)

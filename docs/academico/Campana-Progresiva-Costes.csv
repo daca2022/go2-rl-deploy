@@ -1,0 +1,2 @@
+cell,stage,run,receipt_sha256,training_transitions,evaluation_steps,updates,policy_steps,physical_steps,compile_seconds,collection_seconds,optimization_seconds,export_seconds,charged_wall_seconds,observed_wall_seconds,charged_disk_bytes,wall_limit_seconds,disk_limit_bytes,vram_limit_bytes
+A2-P0,train_with_internal_development_gates,outputs/runs/a2-p0-seed7-progressive-2800,26bc7ec2be06688bced13b06ed172947967333bf4ab637ae385a2dbf68337aeb,4300800,171995,2800,4472795,17891180,74.72442004599998,,,,,31526.105832976,,43200,6442450944,10737418240
