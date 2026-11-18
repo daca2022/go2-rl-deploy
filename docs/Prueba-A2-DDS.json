@@ -1,0 +1,48 @@
+{
+  "checkpoint_update": 2000,
+  "transport": "Unitree SDK2 Python, loopback domain 19",
+  "hardware_connected": false,
+  "results": {
+    "forward": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.062022566847364485,
+      "yaw_rmse_rad_s": 0.023608019478993353
+    },
+    "reverse": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.06754651507222148,
+      "yaw_rmse_rad_s": 0.024104386756868764
+    },
+    "lateral": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.09483074213273249,
+      "yaw_rmse_rad_s": 0.018874978640365574
+    },
+    "yaw": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.017625708410061666,
+      "yaw_rmse_rad_s": 0.04515016848604611
+    }
+  },
+  "disconnect_test": {
+    "policy_ticks": 1,
+    "bridge_requested_ticks": 2,
+    "completed_simulation_ticks": 1,
+    "bridge_exit": "timeout"
+  },
+  "bench_with_mock_endpoints": [
+    "active Sport blocks publisher",
+    "valid command and CRC",
+    "bounded positions and estimated torque",
+    "lost LowState stops position targets and sends damping",
+    "CSV retained on failure"
+  ]
+}

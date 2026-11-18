@@ -50,7 +50,7 @@
         <mxCell id="p4" value="mando" source="remote" target="go" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="future" value="&lt;b&gt;FASE POSTERIOR · Control por A2&lt;/b&gt;&lt;br&gt;rt/lowstate → mapeo y observación → actor → límites P0 → rt/lowcmd&lt;br&gt;Verificar primero con el puente de simulación en dominio separado y después en banco." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2EBFA;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+        <mxCell id="future" value="&lt;b&gt;ADAPTADOR A2/P0 · DDS de bajo nivel&lt;/b&gt;&lt;br&gt;rt/lowstate → mapeo → GRU 50 Hz → P0 → rt/lowcmd&lt;br&gt;Verificado en MuJoCo (lo, dominio 19) · Prueba física de banco pendiente (Ethernet, dominio 0)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2EBFA;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
           <mxGeometry as="geometry" x="50" y="650" width="1010" height="90" />
         </mxCell>
       </root>
