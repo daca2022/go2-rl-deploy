@@ -1,0 +1,27 @@
+{
+  "scope": "archived_development_replay",
+  "checkpoint_sha256": "f8f4ad34412d43ebf885d2232f0f6a071ea51402db7469cb66257bcdef84e0fb",
+  "checkpoint_update": 2000,
+  "training_seed": 7,
+  "command_vector": [
+    0.0,
+    0.2,
+    0.0
+  ],
+  "mujoco": "3.5.0",
+  "simulated_seconds": 20.000000000000306,
+  "policy_ticks": 1000,
+  "physical_steps": 4000,
+  "diagnostic_falls": 0,
+  "planar_rmse_m_s": 0.09483074075371208,
+  "mean_vy_m_s": 0.11021440211729604,
+  "final_base_displacement_xy_m": [
+    0.06087483280908187,
+    2.2031737807617318
+  ],
+  "files_sha256": {
+    "Demo-A2-U2000-Lateral-20s.mp4": "6ad952e6bd54d9739d1fa2989fc373de3917b7b0a55b79c517449f4bc8d7169a",
+    "Telemetria-A2-U2000.csv": "7eccc99cfc4f33a4554306308b86365598a3ef8660413ceae8db180d881b7e8c",
+    "Desarrollo-A2-Continuacion.csv": "002117f9cfe0aba3582fb5b54abd6a187314697d71adcc015cb8ab2d1d388053"
+  }
+}

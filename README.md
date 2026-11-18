@@ -1,6 +1,11 @@
 # Unitree Go2 por Ethernet
 Guía de puesta en marcha desde Ubuntu 22.04 · A2/P0 · GRU de 128
 
+## Proyecto final de robótica avanzada
+
+- [Presentación PowerPoint](docs/academico/Presentacion-Go2.pptx), [informe académico](docs/academico/Informe-Proyecto-Final.pdf) y [último corte verificado](docs/academico/Corte-del-Laboratorio.md).
+- [Datos, videos, diagrama editable y fuentes](docs/academico/LEEME.md) · [Carpeta pública de Drive](https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS).
+
 ## Informe técnico de entrega
 
 - [Informe PDF](docs/Informe-Go2.pdf) y [fuente LaTeX](docs/Informe-Go2.tex)

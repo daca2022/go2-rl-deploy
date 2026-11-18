@@ -150,6 +150,32 @@ El CSV documenta los 278 episodios registrados junto con la marca de pertenencia
 \href{\repo}{Repositorio público y guía de MuJoCo}\quad
 \href{https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS}{Carpeta pública de material}
 
+
+\newpage
+\section*{Anexo de avance · 18 de noviembre de 2026}
+
+\subsection*{Demostración lateral A2/P0}
+El replay del GRU U2000 ejecutó 1.000 decisiones y 4.000 subpasos físicos en MuJoCo CPU. La demostración duró 20 s, con cero caídas según el criterio diagnóstico. Ante una consigna lateral de \(0{,}20\) m/s, la velocidad lateral media fue \(0{,}11021\) m/s y el RMSE planar fue \(0{,}09483\) m/s. El video y el CSV de telemetría permiten revisar tanto el desplazamiento como el margen de seguimiento.
+
+\subsection*{Dos revisiones de desarrollo de la continuación}
+Esta rama toma U2000 como punto de partida y programa cinco bloques hasta U4000. Se verificaron 50 episodios de las dos primeras revisiones. En el corte de publicación, el último registro de entrenamiento era U2940 y el recibo final seguía pendiente.
+
+\begin{tabularx}{\linewidth}{@{}p{.14\linewidth}p{.18\linewidth}p{.20\linewidth}L@{}}
+\toprule
+\textbf{Corte} & \textbf{Aprobados en plano} & \textbf{Plano sin caída a 20 s} & \textbf{Reto propio del corte}\\
+\midrule
+U2400 & 20/20 & 20/20 & Retroceso en \(+1^\circ\). Cinco aprobados.\\
+U2800 & 10/20 & 20/20 & Retroceso en \(+5^\circ\). Cinco sin caída y cero aprobados.\\
+\bottomrule
+\end{tabularx}
+
+En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. Los retos de pendiente tienen distintas inclinaciones. U2400 queda como candidato provisional hasta revisar los cinco bloques. Los 140 episodios reservados permanecen separados.
+
+\subsection*{Preparación de la campaña}
+Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.
+
+\href{\repo/tree/main/docs/academico}{Presentación, videos, datos e índice de reproducibilidad}
+
 \newpage
 \begingroup\small
 \bibliographystyle{unsrturl}
