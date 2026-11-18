@@ -1,0 +1,79 @@
+# Unitree Go2 por Ethernet
+Guía de puesta en marcha desde Ubuntu 22.04 · A2/P0 · GRU de 128
+
+## 1. Qué hay en el paquete
+El actor exportado corresponde al checkpoint A2/P0 2.000, semilla 7. El archivo .ts contiene la red y su normalización. El .mjb contiene la planta P0 compilada para MuJoCo 3.5.0. El manifiesto fija las huellas, el orden de las 12 articulaciones y la escala. La inferencia exportada se cotejó durante 32 pasos recurrentes con el actor original.
+
+El ensayo local usa la política entrenada. El ensayo físico usa el controlador Sport de fábrica. El puente oficial Unitree MuJoCo implementa el transporte DDS de bajo nivel en simulación. Para que el A2 controle el Go2 real hace falta integrar y verificar sus 47 observaciones y 12 objetivos de articulación con el SDK. El archivo del modelo ya está listo para esos trabajos de integración. El estado de hardware se comprobará en tu Go2.
+
+## 2. Descargar y probar en MuJoCo
+En la PC Ubuntu 22.04 de 64 bits, instala Git y entornos virtuales de Python. Accede al repositorio privado con tu cuenta GitHub. Usa la descarga ZIP del repositorio o clónalo.
+
+```bash
+sudo apt update
+sudo apt install git python3-venv python3-dev build-essential cmake libgl1 libglfw3
+git clone https://github.com/daca2022/go2-rl-deploy.git
+cd go2-rl-deploy
+python3 -m venv .venv-sim
+.venv-sim/bin/pip install torch==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+.venv-sim/bin/pip install -r requirements-sim.txt
+mkdir -p pruebas
+.venv-sim/bin/python replay.py forward --view --csv pruebas/sim-forward.csv
+```
+
+Para probar de lado, usa `lateral`. También están `reverse` y `yaw`. Usa un nombre CSV nuevo en cada prueba. Omite `--view` en una PC sin ventana gráfica. El programa registra consigna, velocidad medida por eje, altura y un indicador de caída para esta vista. Reporta error cuadrático medio de velocidad en el plano y duración. Los 20 s de esta prueba sirven para revisar la exportación y el movimiento.
+
+## 3. Instalar el SDK Python
+Usa un entorno virtual independiente. El SDK fijado declara CycloneDDS 0.10.2. Si pip pide CYCLONEDDS_HOME, compila CycloneDDS localmente con el bloque de abajo y vuelve a intentar.
+
+```bash
+python3 -m venv .venv-sdk
+mkdir -p deps
+git clone https://github.com/unitreerobotics/unitree_sdk2_python.git deps/sdk
+git -C deps/sdk checkout 814556d15970dd2ecf1c9984e845ca02ab07e206
+.venv-sdk/bin/pip install ./deps/sdk
+```
+
+```bash
+git clone --branch 0.10.2 https://github.com/eclipse-cyclonedds/cyclonedds.git deps/cyclonedds
+cmake -S deps/cyclonedds -B deps/cyclonedds/build \
+  -DCMAKE_INSTALL_PREFIX="$PWD/deps/cyclonedds/install"
+cmake --build deps/cyclonedds/build --parallel 2
+cmake --install deps/cyclonedds/build
+CYCLONEDDS_HOME="$PWD/deps/cyclonedds/install" .venv-sdk/bin/pip install ./deps/sdk
+```
+
+## 4. Conectar, leer y mover con Sport
+1. Conecta el cable al puerto de desarrollo del Go2. Verifica que tu variante y firmware exponen el SDK y el servicio Sport. Anota modelo, firmware y operador en la bitácora.
+2. Ejecuta `ip -br link` y elige la Ethernet que aparece UP tras conectar. En los ajustes de red de Ubuntu, asigna IPv4 manual 192.168.123.99/24 a esa interfaz según el esquema oficial. Deja gateway y DNS vacíos para ese enlace directo. Si la red del robot fue personalizada, usa su subred. Comprueba la interfaz con `ip -br addr`.
+3. Con el Go2 quieto y el servicio Sport activo, verifica primero recepción. Sustituye enp3s0 por la interfaz real.
+
+```bash
+IFACE=enp3s0
+.venv-sdk/bin/python robot.py --iface "$IFACE" --seconds 10 \
+  --csv pruebas/go2-quieto.csv
+```
+
+La conexión se confirma al recibir telemetría reciente en el CSV. Si falta, revisa enlace, IPv4, interfaz elegida, versión del firmware, servicio Sport y que otro entorno ROS no altere DDS. El SDK Python usa DDS directamente y ROS 2 es opcional.
+
+4. Para el primer movimiento, despeja piso plano, deja el mando físico listo para detener y pon el Go2 de pie con ese mando. Trabaja con un operador junto al mando y una sola fuente de comandos de movimiento. Ejecuta el pulso corto y confirma parada física antes de repetir.
+
+```bash
+.venv-sdk/bin/python robot.py --iface "$IFACE" --seconds 0.5 \
+  --pulse forward --arm --csv pruebas/go2-avance-01.csv
+```
+
+Puedes elegir reverse, left, right o yaw en pruebas separadas. Para teleoperación continua inicial usa el mando físico de Unitree con el capturador en modo lectura. El pulso de terminal pide StopMove al concluir o ante una interrupción. Si se pierde el cable o el equipo se apaga, la orden de parada por software puede no llegar. Usa el mando físico según el procedimiento del equipo y comprueba la parada con observación directa. Move emplea una llamada sin respuesta. Su código y tiempo de envío pertenecen al PC, mientras que movimiento y frenado se comprueban con telemetría y observación.
+
+## 5. Recorrido de datos y futuro control A2
+Abre docs/Go2-Ethernet.drawio en diagrams.net. En el ensayo real actual, el PC escucha rt/sportmodestate con SDK2 Python en el dominio DDS 0 y envía Sport Move y StopMove al servicio de fábrica. En el simulador oficial usa dominio separado y loopback. El replay del paquete ejecuta MuJoCo localmente dentro del mismo proceso.
+
+Para ejecutar A2 en el Go2 físico, primero verifica el orden, signo y cero de cada articulación, marcos de la IMU, límites por junta, frecuencia de control y política de parada. El adaptador de bajo nivel deberá recibir rt/lowstate y formar las 47 entradas en el orden del entrenamiento. El actor devuelve 12 acciones normalizadas cada 20 ms y P0 las transforma en objetivos de posición. Prueba primero el adaptador contra el puente oficial de simulación. La prueba física del actor requiere verificar el mapeo y el controlador, control exclusivo, un procedimiento de parada validado y captura de retorno. Cuando se desactiva Sport, su telemetría puede desaparecer. Para medir velocidad y distancia en control bajo nivel hace falta estimación propia o referencia externa.
+
+## 6. Guardar evidencia
+Usa docs/Bitacora-Go2.xlsx para una fila por ensayo. Conserva los CSV en pruebas/ y anota su nombre. Para MuJoCo registra RMSE por consigna y caídas. Para el Go2 anota velocidad/posición que reporta el SDK, tiempos, errores, parada observada y distancia medida. Confirma el marco de la velocidad física antes de calcular RMSE contra consignas en el marco del cuerpo. El tiempo local de SDK y la edad de la muestra se registran como valores distintos. Marca como pendiente una señal que el equipo aún no mida.
+
+## Fuentes oficiales
+- SDK Python de Unitree https://github.com/unitreerobotics/unitree_sdk2_python/tree/814556d15970dd2ecf1c9984e845ca02ab07e206
+- Red de control Unitree https://github.com/unitreerobotics/unitree_ros2#connect-to-unitree-robot
+- Puente de simulación https://github.com/unitreerobotics/unitree_mujoco

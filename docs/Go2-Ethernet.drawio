@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Go2 · simulación y Ethernet">
+    <mxGraphModel page="1" pageWidth="1140" pageHeight="800" grid="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="simlabel" value="&lt;b&gt;SIMULACIÓN · Misma PC · A2/P0 U2000&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CBE7EE;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="35" width="1010" height="46" />
+        </mxCell>
+        <mxCell id="ts" value="Actor TorchScript&lt;br&gt;47 observaciones → 12 acciones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5F8;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="75" y="125" width="240" height="65" />
+        </mxCell>
+        <mxCell id="mj" value="MuJoCo CPU y P0&lt;br&gt;replay.py · simulación local" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5F8;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="465" y="125" width="255" height="65" />
+        </mxCell>
+        <mxCell id="trace" value="CSV simulación&lt;br&gt;consigna y velocidad" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5F8;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="865" y="125" width="175" height="65" />
+        </mxCell>
+        <mxCell id="s1" value="objetivo articular" source="ts" target="mj" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s2" value="medición" source="mj" target="trace" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="physlabel" value="&lt;b&gt;GO2 FÍSICO · Ethernet · DDS dominio 0 · Controlador Sport&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D9EADC;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="260" width="1010" height="46" />
+        </mxCell>
+        <mxCell id="pc" value="Ubuntu 22.04&lt;br&gt;SDK2 Python · robot.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF7EB;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="75" y="355" width="240" height="75" />
+        </mxCell>
+        <mxCell id="go" value="Go2 · servicio Sport&lt;br&gt;control de fábrica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF7EB;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="760" y="355" width="280" height="75" />
+        </mxCell>
+        <mxCell id="csv" value="CSV y bitácora&lt;br&gt;telemetría y parada observada" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF7EB;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="75" y="515" width="240" height="70" />
+        </mxCell>
+        <mxCell id="remote" value="Operador con mando Unitree&lt;br&gt;teleop inicial y parada física" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF0D7;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="760" y="515" width="280" height="70" />
+        </mxCell>
+        <mxCell id="p1" value="RPC Move / StopMove" source="pc" target="go" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;exitX=1;exitY=0.25;entryX=0;entryY=0.25;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="p2" value="rt/sportmodestate" source="go" target="pc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;entryX=1;entryY=0.75;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="p3" value="muestras DDS" source="pc" target="csv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="p4" value="mando" source="remote" target="go" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#17616f;strokeWidth=2;endArrow=block;labelBackgroundColor=#ffffff;" edge="1" parent="1">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="future" value="&lt;b&gt;FASE POSTERIOR · Control por A2&lt;/b&gt;&lt;br&gt;rt/lowstate → mapeo y observación → actor → límites P0 → rt/lowcmd&lt;br&gt;Verificar primero con el puente de simulación en dominio separado y después en banco." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2EBFA;strokeColor=#507186;fontColor=#11233c;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="50" y="650" width="1010" height="90" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

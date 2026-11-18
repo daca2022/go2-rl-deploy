@@ -1,0 +1,4 @@
+.venv*/
+deps/
+pruebas/
+__pycache__/

@@ -1,0 +1,30 @@
+{
+  "forward": {
+    "seconds_simulated": 20,
+    "samples": 1000,
+    "diagnostic_falls": 0,
+    "planar_rmse_m_s": 0.06200053161193768,
+    "mean_vy_m_s": 0.01583204369367351
+  },
+  "reverse": {
+    "seconds_simulated": 20,
+    "samples": 1000,
+    "diagnostic_falls": 0,
+    "planar_rmse_m_s": 0.06754651113436456,
+    "mean_vy_m_s": 0.016182339332353298
+  },
+  "lateral": {
+    "seconds_simulated": 20,
+    "samples": 1000,
+    "diagnostic_falls": 0,
+    "planar_rmse_m_s": 0.09483074075371208,
+    "mean_vy_m_s": 0.11021440211729604
+  },
+  "yaw": {
+    "seconds_simulated": 20,
+    "samples": 1000,
+    "diagnostic_falls": 0,
+    "planar_rmse_m_s": 0.01762570831352995,
+    "mean_vy_m_s": 0.009717351494109705
+  }
+}
