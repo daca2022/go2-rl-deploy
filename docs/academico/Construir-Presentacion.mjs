@@ -120,7 +120,7 @@ function label(s,title,body,x,y,w) {
   const s=slide("Cada receta destaca en escenarios distintos","Resultados de E1 y E5 sobre los mismos 138 episodios.");
   await pic(s,"Resultados-por-escenario.png",66,209,720,391,"Tasas de aprobación por escenario para E1 y E5");
   text(s,"100 frente a 98",825,244,362,69,40,{bold:true,color:C.teal});
-  text(s,"E1 ganó en avance con masa y retardo, gracias al margen que ya tenía en plano.",825,337,355,96,24);
+  text(s,"E1 tuvo menor error de avance en plano y con masa y retardo.",825,337,355,96,24);
   text(s,"E5 obtuvo 8/18 en terreno rugoso. E1 obtuvo 5/18.",825,451,355,93,24);
   text(s,"Ambos quedaron en 0/20 en pendiente de 5°.",825,557,355,61,23,{color:C.quiet});
   note(s,"9:30–11:10. Mostrar ventaja local, no superioridad universal. El error mediano de avance en plano fue 0,0608 para E1 y 0,0743 m/s para E5. Bajo masa y retardo quedó en 0,0917 y 0,1032. Los incrementos son parecidos.",[source+"/Episodios-A0.csv",source+"/Resultados-por-escenario.png"]);
@@ -130,25 +130,26 @@ function label(s,title,body,x,y,w) {
   const xs=[66,306,640,926];
   const widths=[240,334,286,288];
   const rows=[
-    ["Checkpoint","Trote en plano","20 s sin caída en plano","Reto de pendiente"],
+    ["Checkpoint","Trote en plano","20 s sin caída en plano","Reto de desarrollo"],
     ["U2400","20 de 20","20 de 20","5 de 5 en +1°"],
-    ["U2800","10 de 20","20 de 20","0 de 5 en +5°"]
+    ["U2800","10 de 20","20 de 20","0 de 5 en +5°"],
+    ["U3200","15 de 20","20 de 20","1 de 5 en masa +10 %"]
   ];
   rows.forEach((row,i)=>{
-    const y=229+78*i; rect(s,66,y,1148,73,i===0?C.navy:C.white);
+    const y=220+68*i; rect(s,66,y,1148,63,i===0?C.navy:C.white);
     row.forEach((value,j)=>text(s,value,xs[j]+13,y+10,widths[j]-24,50,i===0?20:26,
       {bold:i===0||j<2,color:i===0?C.white:C.ink}));
   });
-  text(s,"En U2800 fallaron avance y lateral por seguimiento. La validación reservada sigue pendiente.",66,537,1120,63,27,{color:C.quiet});
-  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. No comparar directamente los retos de +1° y +5°. Dejar U2400 como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
+  text(s,"U3200 recuperó el avance. El lateral registró 0,121 m/s de RMSE con límite de 0,10.",66,537,1120,63,27,{color:C.quiet});
+  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5° y masa +10 % cambian de condición. U2400 conserva el mejor plano en tres revisiones completas. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
 }
 {
   const s=slide("Qué queda demostrado","Locomoción en simulación y una campaña comparativa preparada.");
   label(s,"Evidencia disponible","Videos A0 y A2, datos por episodio y\nmediciones de seguimiento reproducibles.",65,224,535);
-  label(s,"Campaña preparada en CPU","A0, A1 y A2 con P0 y T0.\n140 episodios emparejados por corrida.",664,224,543);
+  label(s,"Campaña de seis combinaciones","1 entrenamiento CUDA verificado.\n140 episodios de validación por celda.",664,224,543);
   rect(s,65,476,1150,1,C.line);
   text(s,"Siguiente hito",65,510,300,39,28,{bold:true,color:C.teal});
-  text(s,"Verificar el recibo A2, elegir el checkpoint con datos de desarrollo y fijar su validación.",355,496,832,85,26);
+  text(s,"Completar las revisiones de la continuación y elegir el checkpoint para su validación reservada.",355,496,832,85,26);
   note(s,"13:00–15:00. Cerrar con lo que funciona y lo que queda abierto. La campaña completa, las cuatro habilidades finales y las auditorías F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",drive]);
 }
 {

@@ -15,7 +15,7 @@
 | [Figura por escenario](Resultados-por-escenario.png) y [figura de error de avance](Error-de-avance.png) | Gráficos a partir de los episodios comunes. |
 | [Presentación PPTX](Presentacion-Go2.pptx) y [copia PDF](Presentacion-Go2.pdf) | Diez diapositivas con notas de exposición. |
 | [Lateral A2/P0](Demo-A2-U2000-Lateral-20s.mp4), [telemetría](Telemetria-A2-U2000.csv) y [huellas](Evidencia-A2-U2000.json) | Demostración de 20 s en MuJoCo CPU. |
-| [Último corte verificado](Corte-del-Laboratorio.md) y [desarrollo A2](Desarrollo-A2-Continuacion.csv) | Estado fechado y 50 episodios de desarrollo. |
+| [Último corte verificado](Corte-del-Laboratorio.md) y [desarrollo A2](Desarrollo-A2-Continuacion.csv) | Estado fechado y 75 episodios de desarrollo. |
 | [Celdas de campaña](Campana-Progresiva-Celdas.csv), [costes](Campana-Progresiva-Costes.csv) y [recibos resumidos](Campana-Progresiva-Resumen.json) | Una de seis celdas con entrenamiento verificado. Validaciones reservadas pendientes. |
 | [Resultados A2 por DDS](../Prueba-A2-DDS.json) | Cuatro ensayos de 20 s del actor exportado en MuJoCo. |
 

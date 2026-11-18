@@ -157,8 +157,8 @@ El CSV documenta los 278 episodios registrados junto con la marca de pertenencia
 \subsection*{Demostración lateral A2/P0}
 El replay del GRU U2000 ejecutó 1.000 decisiones y 4.000 subpasos físicos en MuJoCo CPU. La demostración duró 20 s, con cero caídas según el criterio diagnóstico. Ante una consigna lateral de \(0{,}20\) m/s, la velocidad lateral media fue \(0{,}11021\) m/s y el RMSE planar fue \(0{,}09483\) m/s. El video y el CSV de telemetría permiten revisar tanto el desplazamiento como el margen de seguimiento.
 
-\subsection*{Dos revisiones de desarrollo de la continuación}
-Esta rama toma U2000 como punto de partida y programa cinco bloques hasta U4000. Se verificaron 50 episodios de las dos primeras revisiones. En el corte de publicación, el último registro de entrenamiento era U2940 y el recibo final seguía pendiente.
+\subsection*{Tres revisiones de desarrollo de la continuación}
+Esta rama toma U2000 como punto de partida y programa cinco bloques hasta U4000. Se verificaron 75 episodios de las tres primeras revisiones, hasta U3200. El recibo final sigue pendiente.
 
 \begin{tabularx}{\linewidth}{@{}p{.14\linewidth}p{.18\linewidth}p{.20\linewidth}L@{}}
 \toprule
@@ -166,13 +166,14 @@ Esta rama toma U2000 como punto de partida y programa cinco bloques hasta U4000.
 \midrule
 U2400 & 20/20 & 20/20 & Retroceso en \(+1^\circ\). Cinco aprobados.\\
 U2800 & 10/20 & 20/20 & Retroceso en \(+5^\circ\). Cinco sin caída y cero aprobados.\\
+U3200 & 15/20 & 20/20 & Masa \(\times 1{,}10\). 5/5 al horizonte y 1/5 aprobados.\\
 \bottomrule
 \end{tabularx}
 
-En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. Los retos de pendiente tienen distintas inclinaciones. U2400 queda como candidato provisional hasta revisar los cinco bloques. Los 140 episodios reservados permanecen separados.
+En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. En U3200, el avance bajó a \(0{,}09554\) m/s y recuperó el aprobado en 5/5. El lateral subió a \(0{,}12083\) m/s y quedó en 0/5. Los retos entre cortes cambian de inclinación o de condición. U2400 queda como candidato provisional hasta revisar los cinco bloques. Los 140 episodios reservados permanecen separados.
 
 \subsection*{Preparación de la campaña}
-Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.
+Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. El entrenamiento original A2/P0 tiene un recibo CUDA verificado por 4.300.800 transiciones y 8 h 45 min de pared. Cada celda conserva su validación reservada pendiente. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.
 
 \href{\repo/tree/main/docs/academico}{Presentación, videos, datos e índice de reproducibilidad}
 
