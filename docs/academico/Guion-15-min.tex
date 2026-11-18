@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+\input{Estilo-Go2}
+\hypersetup{pdftitle={Guion de 15 minutos - Unitree Go2}}
+\begin{document}
+\color{tinta}
+{\color{teal}\small\bfseries EXPOSICIÓN ORAL · PROYECTO FINAL\par}
+\vspace{.65em}
+{\fontsize{30}{33}\selectfont\bfseries Go2 en 15 minutos\par}
+\vspace{.35em}
+{\large Trote en MuJoCo, control PD y comparación de entrenamientos\par}
+
+\section*{Secuencia de la exposición}
+\begin{tabularx}{\linewidth}{@{}p{.13\linewidth}p{.25\linewidth}L@{}}
+\toprule
+\textbf{Tiempo} & \textbf{Rúbrica} & \textbf{Qué mostrar y decir}\\
+\midrule
+0:00–1:30 & Introducción · 1 punto & Plantea el objetivo. Coordinar 12 articulaciones y seguir cuatro consignas manteniendo el equilibrio. Pregunta si un currículo preparado para mayor dificultad mejora la política.\\
+1:30–4:00 & Marco teórico · 2 puntos & Usa la Figura 2. El actor genera objetivos y el PD regula el movimiento de las juntas. Explica qué aprende PPO, qué recuerda la GRU y qué simula MuJoCo.\\
+4:00–7:30 & Metodología · 3 puntos & Muestra el Draw.io. E1 y E5 usan 3.072.000 transiciones en plano. Explica las pruebas internas congeladas, las siete condiciones y el significado de aprobación, caída y RMSE.\\
+7:30–13:00 & Resultados · 3 puntos & Reproduce los 20 s del video A0. Muestra las Figuras 3 y 4. Explica el margen de E1 con masa y retardo y la mejora de E5 en terreno rugoso. Si usas demo en vivo, elige el modo MuJoCo del panel A2.\\
+13:00–15:00 & Conclusiones · 1 punto & Resume qué funciona, dónde fallan ambos y qué experimento separaría el efecto de la pendiente del efecto del entorno.\\
+\bottomrule
+\end{tabularx}
+
+\section*{Guía para la demostración}
+\textbf{Video listo para reproducir.} Abre \texttt{Demo-A0-U1600-20s.mp4} antes de la exposición. Durante la reproducción identifica los apoyos diagonales y la consigna de avance de 0,30 m/s. El clip es A0/P0 U1600 y los resultados comparativos del informe son de U2000.
+
+\textbf{Opción en vivo.} En el repositorio \texttt{go2-rl-deploy} ya instalado, ejecuta \texttt{bash abrir-panel.sh}. Selecciona el modo MuJoCo y la consigna Avance. El panel ejecuta A2/P0 y guarda el CSV de la prueba. Ten preparado el video local si el entorno gráfico tarda en abrir.
+
+\section*{Preguntas que conviene ensayar}
+\textbf{¿Por qué E5 tomó más horas?} Dedicó unas cuatro horas a pruebas internas con pesos congelados. Los dos entrenaron con el mismo número de transiciones.
+
+\textbf{¿Por qué E1 gana en masa y retardo?} En avance, su RMSE nominal es 0,0608 m/s y sube a 0,0917. El de E5 va de 0,0743 a 0,1032. Los aumentos son parecidos y solo E5 supera el límite de 0,10.
+
+\textbf{¿Más actualizaciones aseguraron mejor A2?} U2800 bajó ligeramente el error lateral en la revisión interna. U2000 conservó el criterio completo de trote al retroceder en pendiente leve.
+
+\href{\repo}{Repositorio público y panel}\quad
+\href{https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS}{Material de la exposición}
+\end{document}

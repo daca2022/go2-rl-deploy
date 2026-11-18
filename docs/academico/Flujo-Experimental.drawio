@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram id="control" name="Control y simulación">
+    <mxGraphModel grid="1" gridSize="10" guides="1" page="1" pageScale="1" pageWidth="1120" pageHeight="520" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Lazo de control del Unitree Go2" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=30;fontColor=#193045;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="28" width="1030" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Política de locomoción y realimentación articular en MuJoCo" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="82" width="1030" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="o" value="&lt;b&gt;Consigna y estado&lt;/b&gt;&lt;br&gt;47 observaciones&lt;br&gt;IMU, juntas, acción y fase" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="40" y="155" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="a" value="&lt;b&gt;Actor&lt;/b&gt;&lt;br&gt;A0 multicapa o A2 GRU&lt;br&gt;12 acciones a 50 Hz" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="305" y="155" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="p" value="&lt;b&gt;Control P0&lt;/b&gt;&lt;br&gt;Objetivo de posición&lt;br&gt;PD con torque saturado" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="570" y="155" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="m" value="&lt;b&gt;MuJoCo&lt;/b&gt;&lt;br&gt;Cuerpo, juntas y contactos&lt;br&gt;200 pasos físicos por segundo" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="835" y="155" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="oa" parent="1" edge="1" source="o" target="a" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ap" parent="1" edge="1" source="a" target="p" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pm" parent="1" edge="1" source="p" target="m" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mo" parent="1" edge="1" source="m" target="o" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="945" y="304" />
+              <mxPoint x="150" y="304" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="feedback-label" value="Realimentación de estado" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="408" y="312" width="280" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="El actor genera objetivos articulares. El controlador PD regula las juntas a partir de su estado." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="374" width="1015" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="demo" value="Demostración de desarrollo · A0/P0 U1600, 20 s en MuJoCo CPU" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#116A61;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="416" width="1015" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="experimento" name="Entrenamiento y evaluación">
+    <mxGraphModel grid="1" gridSize="10" guides="1" page="1" pageScale="1" pageWidth="1120" pageHeight="520" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Comparación de entrenamientos A0/P0" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=30;fontColor=#193045;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="28" width="1030" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="E1 y E5 usan PPO, la semilla 7 y el mismo presupuesto de transiciones" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="82" width="1030" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="base" value="&lt;b&gt;Diseño común&lt;/b&gt;&lt;br&gt;64 entornos × 24 pasos × 2.000 actualizaciones" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="40" y="152" width="245" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="&lt;b&gt;Entrenamiento E1&lt;/b&gt;&lt;br&gt;Plano nominal&lt;br&gt;PPO continuo" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="330" y="152" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="&lt;b&gt;Entrenamiento E5&lt;/b&gt;&lt;br&gt;Plano, PPO por bloques&lt;br&gt;125 pruebas internas" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="595" y="152" width="220" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="eval" value="&lt;b&gt;Validación&lt;/b&gt;&lt;br&gt;7 escenarios × 4 consignas × 5 semillas&lt;br&gt;138 pares observados" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="330" y="306" width="485" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="score" value="&lt;b&gt;Resultados&lt;/b&gt;&lt;br&gt;Trote cumplido&lt;br&gt;Caídas y RMSE" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
+          <mxGeometry x="860" y="306" width="195" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" parent="1" edge="1" source="base" target="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="b5" parent="1" edge="1" source="base" target="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="162" y="130" />
+              <mxPoint x="705" y="130" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v1" parent="1" edge="1" source="e1" target="eval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=0.5;exitY=1;entryX=.227;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="v5" parent="1" edge="1" source="e5" target="eval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=0.5;exitY=1;entryX=.773;entryY=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="vr" parent="1" edge="1" source="eval" target="score" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;endFill=1;strokeColor=#116A61;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="La evaluación de E5 contiene 140 episodios. E1 y E5 se comparan sobre los 138 presentes en ambas corridas." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=15;fontColor=#4A5C6A;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="444" width="1015" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

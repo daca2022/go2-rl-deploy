@@ -1,0 +1,27 @@
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern,microtype,amsmath,graphicx}
+\usepackage[a4paper,margin=20mm,headheight=15pt]{geometry}
+\usepackage{array,booktabs,tabularx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\usepackage{xcolor,fancyhdr}
+\definecolor{tinta}{HTML}{193045}
+\definecolor{teal}{HTML}{116A61}
+\definecolor{gris}{HTML}{4A5C6A}
+\definecolor{suave}{HTML}{EAF4F3}
+\usepackage[colorlinks=true,allcolors=teal,bookmarksnumbered=true]{hyperref}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gris} ROBÓTICA AVANZADA · UNITREE GO2}
+\fancyhead[R]{\small\color{gris} PROYECTO FINAL · 2026-2}
+\fancyfoot[R]{\small\color{gris}\thepage}
+\renewcommand{\headrulewidth}{.3pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{.5em}
+\setlength{\fboxsep}{8pt}
+\renewcommand{\arraystretch}{1.18}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\recuadro}[1]{\par\noindent\colorbox{suave}{\parbox{\dimexpr\linewidth-2\fboxsep}{#1}}\par}
+\newcommand{\repo}{https://github.com/daca2022/go2-rl-deploy}
