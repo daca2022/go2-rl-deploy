@@ -157,8 +157,8 @@ El CSV documenta los 278 episodios registrados junto con la marca de pertenencia
 \subsection*{Demostración lateral A2/P0}
 El replay del GRU U2000 ejecutó 1.000 decisiones y 4.000 subpasos físicos en MuJoCo CPU. La demostración duró 20 s, con cero caídas según el criterio diagnóstico. Ante una consigna lateral de \(0{,}20\) m/s, la velocidad lateral media fue \(0{,}11021\) m/s y el RMSE planar fue \(0{,}09483\) m/s. El video y el CSV de telemetría permiten revisar tanto el desplazamiento como el margen de seguimiento.
 
-\subsection*{Cuatro revisiones de desarrollo de la continuación}
-Esta rama toma U2000 como punto de partida y programa cinco bloques hasta U4000. Se verificaron 100 episodios de las cuatro primeras revisiones, hasta U3600. Falta la revisión U4000. El recibo final sigue pendiente.
+\subsection*{Cinco revisiones de desarrollo de la continuación}
+La continuación parte de U2000. Tras una interrupción se retomó desde U3900, con 100 actualizaciones y 153.600 transiciones nuevas en 1 h 08 min. El recibo verificado enlaza las primeras cuatro revisiones con los 25 episodios nuevos de U4000. Se excluyeron 17 registros del intento interrumpido.
 
 \begin{tabularx}{\linewidth}{@{}p{.14\linewidth}p{.18\linewidth}p{.20\linewidth}L@{}}
 \toprule
@@ -168,10 +168,11 @@ U2400 & 20/20 & 20/20 & Retroceso en \(+1^\circ\). Cinco aprobados.\\
 U2800 & 10/20 & 20/20 & Retroceso en \(+5^\circ\). Cinco sin caída y cero aprobados.\\
 U3200 & 15/20 & 20/20 & Masa \(\times 1{,}10\). 5/5 al horizonte y 1/5 aprobados.\\
 U3600 & 15/20 & 20/20 & Retardo de 20 ms. 5/5 al horizonte y 3/5 aprobados.\\
+U4000 & 15/20 & 20/20 & Masa +10\% y 20 ms de retardo. 5/5 al horizonte y 2/5 aprobados.\\
 \bottomrule
 \end{tabularx}
 
-En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. En U3200, el avance bajó a \(0{,}09554\) m/s y recuperó el aprobado en 5/5. En U3600 volvió a bajar a \(0{,}07068\) m/s. El lateral pasó de \(0{,}12083\) a \(0{,}12059\) m/s y conservó 0/5 aprobados. El reto de retardo de 20 ms completó 5/5 al horizonte, con 3/5 aprobados y RMSE medio de \(0{,}08400\) m/s. La calificación se aplica por episodio y conserva el monitor de trote. Los retos entre cortes difieren en condición. U2400 conserva el único filtro nominal completo aprobado. Faltan U4000 y el recibo final. Los 140 episodios reservados permanecen separados.
+En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. En U3200, el avance bajó a \(0{,}09554\) m/s y recuperó el aprobado en 5/5. En U3600 volvió a bajar a \(0{,}07068\) m/s. El lateral pasó de \(0{,}12083\) a \(0{,}12059\) m/s y conservó 0/5 aprobados. El reto de retardo de 20 ms completó 5/5 al horizonte, con 3/5 aprobados y RMSE medio de \(0{,}08400\) m/s. La calificación se aplica por episodio y conserva el monitor de trote. Los retos entre cortes difieren en condición. U2400 conserva el único filtro nominal completo aprobado. En U4000, el lateral bajó a \(0{,}11120\) m/s, con 0/5 aprobados. Los 25 episodios llegaron a 20 s sin caída. Quedan por contrastar U2400 y U2000 en escenarios emparejados antes de elegir el checkpoint que irá a los 140 episodios reservados.
 
 \subsection*{Preparación de la campaña}
 Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. El entrenamiento original A2/P0 tiene un recibo CUDA verificado por 4.300.800 transiciones y 8 h 45 min de pared. Cada celda conserva su validación reservada pendiente. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.
@@ -195,7 +196,7 @@ Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, P
 \textbf{Continuidad entre entradas de condición.} Se verificaron 12 cambios diagnósticos con el mismo actor A2/P0 de trote. La captura conservó el estado físico y la memoria GRU entre decisiones, con 3.840 subpasos físicos en total. Los cambios de entrada prueban la continuidad del recorrido. La política condicionada entrenada para cuatro habilidades y la evaluación de sus transiciones físicas siguen pendientes.
 
 \medskip
-\textbf{Consulta del informe de campaña.} La vista del panel presenta una instantánea verificada del entrenamiento original A2/P0 y las seis combinaciones programadas. Conserva una de seis celdas entrenada, cero validaciones verificadas y selección pendiente. Los controles de lectura y acceso se comprobaron en CPU y en Chrome. Los resultados de la continuación permanecen limitados al corte U3600 descrito en este anexo, con recibo final pendiente.
+\textbf{Consulta del informe de campaña.} La vista del panel presenta una instantánea verificada del entrenamiento original A2/P0 y las seis combinaciones programadas. Conserva una de seis celdas entrenada, cero validaciones verificadas y selección pendiente. Los controles de lectura y acceso se comprobaron en CPU y en Chrome. El CSV y el resumen de evidencia documentan las cinco revisiones de la continuación. La validación reservada sigue pendiente.
 
 \newpage
 \begingroup\small

@@ -8,15 +8,16 @@
 | Video A0/P0 U1600 | 20 s de trote en avance en MuJoCo CPU. |
 | Video A2/P0 U2000 | 20 s de lateral, 1.000 decisiones, 4.000 subpasos y cero caídas diagnósticas. Consigna 0,20 m/s. Velocidad lateral media 0,11021 m/s. RMSE planar 0,09483 m/s. |
 | A2 original | Semilla 7, 2.800 actualizaciones completadas en CUDA y 4.300.800 transiciones. |
-| Continuación A2 desde U2000 | Cuatro de cinco revisiones internas completas hasta U3600 de U4000. Recibo final pendiente. |
+| Continuación A2 desde U2000 | Cinco revisiones completas. La recuperación desde U3900 terminó en U4000 con recibo verificado y 125 episodios de desarrollo acumulados. |
 | U2400 de la continuación | 20/20 aprobados en plano y 5/5 en retroceso sobre +1°. |
 | U2800 de la continuación | 10/20 aprobados en plano, con 20/20 al horizonte. En +5°, 5/5 al horizonte y 0/5 en el monitor completo de trote. |
 | U3200 de la continuación | 15/20 aprobados y 20/20 al horizonte en plano. El lateral quedó en 0/5 con RMSE de 0,12083 m/s. Con 10 % más de masa, 1/5 aprobados y 5/5 al horizonte. |
 | U3600 de la continuación | 15/20 aprobados y 20/20 al horizonte en plano. Avance con RMSE de 0,07068 m/s. Lateral con 0,12059 m/s y 0/5. Con retardo de 20 ms, 3/5 aprobados y 5/5 al horizonte. |
+| U4000 de la recuperación | 15/20 aprobados y 20/20 al horizonte en plano. Lateral 0/5 con RMSE de 0,11120 m/s. Con masa +10 % y retardo de 20 ms, 2/5 aprobados y 5/5 al horizonte. |
 | Comparación A0/A1/A2 con P0/T0 | Seis constructores, PPO corto y recarga verificados en CPU. El protocolo empareja 140 episodios por corrida. |
 | Reanudación DC | Igualdad de trayectoria, optimizador y estado aleatorio al reanudar una actualización verificada de A1/DC/P0 en CPU. |
 
-Los cuatro cortes usan el mismo filtro nominal de 0,10 m/s. Los retos de cada corte difieren en dificultad y condición. U2400 conserva el único filtro nominal completo aprobado. La selección A2 sigue abierta hasta verificar el recibo y revisar los cinco bloques. El CSV de desarrollo contiene los 100 episodios verificados, con su huella de registro. Los números de U2800 en la continuación pertenecen a esa rama y son distintos de los resultados del A2 U2800 original.
+Los cinco cortes usan el mismo filtro nominal de 0,10 m/s. Los retos de cada corte difieren en dificultad y condición. U2400 conserva el único filtro nominal completo aprobado. La selección A2 sigue pendiente del contraste emparejado de U2400 con la referencia U2000. El CSV contiene 100 episodios verificados de la corrida original y 25 nuevos de la recuperación. El intento interrumpido de U4000 dejó 17 episodios parciales que se excluyeron. El [resumen de evidencia](Evidencia-Recuperacion-A2.json) fija las huellas y los costes. Los números de U2800 en la continuación pertenecen a esa rama y son distintos de los resultados del A2 U2800 original.
 
 El plan maestro conserva 42 de 56 entradas cerradas. Quedan la validación reservada, la comparación de calidad, las cuatro habilidades y la verificación final. Los lanzamientos GPU corresponden al operador.
 
@@ -34,7 +35,7 @@ Los evaluadores de sentarse y pronking conservaron 5.200 subpasos reproducibles 
 
 La prueba de transiciones conservó la continuidad de la física y de la GRU en 12 cambios entre entradas de condición. Todos ejecutaron el mismo actor de trote. La política entrenada para cuatro habilidades y sus transiciones siguen pendientes.
 
-El informe de campaña del panel conserva una instantánea verificada del entrenamiento original A2/P0, con una de seis celdas entrenada y cero validaciones verificadas. La continuación hasta U3600 conserva el recibo pendiente indicado arriba.
+El informe de campaña del panel conserva una instantánea verificada del entrenamiento original A2/P0, con una de seis celdas entrenada y cero validaciones verificadas. El recibo de recuperación registra 100 actualizaciones y 153.600 transiciones nuevas, con 1 h 08 min de pared. Sigue pendiente la validación reservada de 140 episodios.
 
 - [Tabla de seis celdas](Campana-Progresiva-Celdas.csv) y [costes desde el recibo](Campana-Progresiva-Costes.csv)
 - [Datos de desarrollo A2](Desarrollo-A2-Continuacion.csv)

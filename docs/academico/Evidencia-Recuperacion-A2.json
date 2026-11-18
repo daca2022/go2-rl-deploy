@@ -1,0 +1,69 @@
+{
+  "tipo": "continuacion_a2_p0_desarrollo_en_mujoco",
+  "semilla_entrenamiento": 7,
+  "recibo_recuperacion_sha256": "674fb6ece1ce2fc0a208754c2f1c1006813863dfc982cecd962d6325536553b5",
+  "checkpoint_padre_u3900_sha256": "5f45c8f7d1d31320525bc92680841d087cc4972d87bccd14da94ec4efe3f358f",
+  "checkpoint_u4000_pre_evaluacion_sha256": "5ed3048e7837e48b7d5f1f9a92cd5af18c6b490dbb3acf5fb21cc84212dee751",
+  "checkpoint_u4000_final_sha256": "abf8c07012366be5e87b8a6ee4e200a194fc64ff4b421c41d7785baa01142eb8",
+  "digest_nativo_episodios_en_dos_tramos": "21b5080262b9796dc28bebdc24c0a2608fdfdda4cf3c9e851dde03052306f544",
+  "actualizaciones_acumuladas": 4000,
+  "transiciones_acumuladas": 6144000,
+  "actualizaciones_de_recuperacion": 100,
+  "transiciones_de_recuperacion": 153600,
+  "duracion_recuperacion_s": 4062.69,
+  "episodios_previos_verificados": 100,
+  "episodios_nuevos_verificados": 25,
+  "episodios_interrumpidos_excluidos": 17,
+  "episodios_reservados_ejecutados": 0,
+  "limite_rmse_planar_m_s": 0.1,
+  "u4000_nominal": {
+    "forward": {
+      "recorded": 5,
+      "expected": 5,
+      "horizon_without_fall": 5,
+      "qualified_trot": 5,
+      "falls": 0,
+      "mean_planar_rmse_horizon_m_s": 0.05901368206696072,
+      "mean_planar_rmse_prefix_m_s": null
+    },
+    "reverse": {
+      "recorded": 5,
+      "expected": 5,
+      "horizon_without_fall": 5,
+      "qualified_trot": 5,
+      "falls": 0,
+      "mean_planar_rmse_horizon_m_s": 0.058024770198623926,
+      "mean_planar_rmse_prefix_m_s": null
+    },
+    "lateral": {
+      "recorded": 5,
+      "expected": 5,
+      "horizon_without_fall": 5,
+      "qualified_trot": 0,
+      "falls": 0,
+      "mean_planar_rmse_horizon_m_s": 0.11120381166942,
+      "mean_planar_rmse_prefix_m_s": null
+    },
+    "yaw": {
+      "recorded": 5,
+      "expected": 5,
+      "horizon_without_fall": 5,
+      "qualified_trot": 5,
+      "falls": 0,
+      "mean_planar_rmse_horizon_m_s": 0.03563534839550733,
+      "mean_planar_rmse_prefix_m_s": null
+    }
+  },
+  "u4000_masa_y_retardo": {
+    "scenario": "mass_x1_10_delay_20ms",
+    "recorded": 5,
+    "expected": 5,
+    "horizon_without_fall": 5,
+    "qualified_trot": 2,
+    "falls": 0,
+    "mean_planar_rmse_horizon_m_s": 0.0979565565596491,
+    "mean_planar_rmse_prefix_m_s": null
+  },
+  "unico_corte_con_20_de_20_en_plano": 2400,
+  "checkpoint_seleccionado": null
+}

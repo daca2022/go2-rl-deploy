@@ -134,15 +134,16 @@ function label(s,title,body,x,y,w) {
     ["U2400","20 de 20","20 de 20","5 de 5 en +1°"],
     ["U2800","10 de 20","20 de 20","0 de 5 en +5°"],
     ["U3200","15 de 20","20 de 20","1 de 5 en masa +10 %"],
-    ["U3600","15 de 20","20 de 20","3 de 5 con retardo\n20 ms"]
+    ["U3600","15 de 20","20 de 20","3 de 5 · retardo 20 ms"],
+    ["U4000","15 de 20","20 de 20","2 de 5 · masa y retardo"]
   ];
   rows.forEach((row,i)=>{
-    const y=214+57*i; rect(s,66,y,1148,53,i===0?C.navy:C.white);
-    row.forEach((value,j)=>text(s,value,xs[j]+13,y+4,widths[j]-24,45,i===0?20:25,
+    const y=202+54*i; rect(s,66,y,1148,50,i===0?C.navy:C.white);
+    row.forEach((value,j)=>text(s,value,xs[j]+13,y+4,widths[j]-24,45,i===0?20:j===3?21:25,
       {bold:i===0||j<2,color:i===0?C.white:C.ink}));
   });
-  text(s,"U3600 redujo el error de avance a 0,071 m/s. El lateral sigue fuera del límite de 0,10.",66,537,1120,63,27,{color:C.quiet});
-  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5°, masa +10 % y retardo de 20 ms cambian de condición. U3600 aprobó 3/5 con retardo y completó los cinco horizontes. U2400 conserva el único filtro plano completo en cuatro revisiones. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
+  text(s,"U4000 completó los 25 episodios sin caídas. El lateral quedó en 0,111 m/s con límite de 0,10.",66,537,1120,63,27,{color:C.quiet});
+  note(s,"11:10–13:00. Diferenciar pasar el horizonte y aprobar el monitor. Los retos de +1°, +5°, masa +10 % y retardo de 20 ms cambian de condición. U3600 aprobó 3/5 con retardo y completó los cinco horizontes. U4000 completó 25/25 sin caídas y aprobó 2/5 con masa +10 % y 20 ms de retardo. U2400 conserva el único filtro plano completo en cinco revisiones. Dejarlo como candidato provisional. El filtro común es 0,10 m/s. Esta rama es diferente al entrenamiento A2/P0 original U2800.",[source+"/Desarrollo-A2-Continuacion.csv",source+"/Corte-del-Laboratorio.md"]);
 }
 {
   const s=slide("Qué verificamos además del trote","Pruebas de ingeniería en MuJoCo CPU.");
@@ -159,8 +160,8 @@ function label(s,title,body,x,y,w) {
   rect(s,65,498,1150,1,C.line);
   text(s,"Campaña con 1 de 6 entrenamientos y 0 validaciones verificadas.",65,516,1140,38,24,{color:C.quiet});
   text(s,"Siguiente hito",65,578,255,36,26,{bold:true,color:C.teal});
-  text(s,"Cerrar las revisiones de la continuación y elegir el checkpoint para la validación reservada.",342,568,865,63,24);
-  note(s,"13:00–15:00. Mantener el corte de la continuación en U3600 y sus 100 episodios. Faltan U4000 y el recibo final. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Sentarse duró 6 s sin sostén válido y pronking 20 s con cero vuelos válidos. Se verificaron 5.200 subpasos entre ambos episodios. Los 12 cambios de entrada conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
+  text(s,"Comparar U2400 con U2000 en desarrollo y fijar el checkpoint para la validación reservada.",342,568,865,63,24);
+  note(s,"13:00–15:00. La recuperación a U4000 quedó verificada. Los cinco cortes suman 125 episodios de desarrollo. La validación reservada sigue pendiente. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Sentarse duró 6 s sin sostén válido y pronking 20 s con cero vuelos válidos. Se verificaron 5.200 subpasos entre ambos episodios. Los 12 cambios de entrada conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
 }
 {
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");
