@@ -1,0 +1,47 @@
+{
+  "checkpoint_update": 4000,
+  "transport": "Unitree SDK2 Python, loopback domain 19",
+  "hardware_connected": false,
+  "export": {
+    "checkpoint_update": 4000,
+    "native_actor_sha256": "dd428341b2b4259c9cf498067651c80a934efa83a1b65ad833d61b018c6eaace",
+    "export_sha256": "a4036a1b0efab08f1c9c01918bd5168da9d7dfca04a1b676f9015234783d66be",
+    "manifest_sha256": "9f73be4d45faa5600989acf5a76d639ca1a2fc286896c4beefa76789f3b1c453",
+    "sequence_steps": 32,
+    "max_abs_action_error": 0.0,
+    "reset_abs_action_error": 0.0,
+    "hardware_connected": false,
+    "cuda_initialized": false
+  },
+  "results": {
+    "forward": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.05912408683238493,
+      "yaw_rmse_rad_s": 0.028978479891465306
+    },
+    "reverse": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.057851470918565656,
+      "yaw_rmse_rad_s": 0.03302560690625897
+    },
+    "lateral": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.11122171141536599,
+      "yaw_rmse_rad_s": 0.027838752409491456
+    },
+    "yaw": {
+      "samples": 1000,
+      "seconds": 20,
+      "falls": 0,
+      "planar_rmse_m_s": 0.03582488065137119,
+      "yaw_rmse_rad_s": 0.04570225472823649
+    }
+  },
+  "same_trajectory_after_removing_export_debug_metadata": true
+}

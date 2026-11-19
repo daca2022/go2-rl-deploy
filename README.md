@@ -31,8 +31,10 @@ Si ya tienes el repositorio, usa `git pull --ff-only` dentro de la carpeta exist
 
 Desde la ventana puedes seleccionar avance, retroceso, lateral izquierdo y giro. MuJoCo usa el GRU. En el robot, la lectura de telemetría y el modo sombra son de solo lectura. El movimiento en piso que ofrece el panel usa Sport de fábrica. El modo GRU en banco requiere el perfil calibrado de tu unidad, Sport desactivado y el perro sostenido con patas libres. [Guía del panel y primera conexión](docs/Panel-Go2.md).
 
+Para probar el modelo del piloto de pendientes, elige **4000** en **Checkpoint GRU**. En terminal usa `--policy-update 4000` con `replay.py`, con el proceso `policy` de `a2_sim.py` y con los modos `shadow` o `bench` de `a2_robot.py`. U2000 es la opción inicial. [Guía de despliegue de U4000](docs/U4000-Go2.md).
+
 ## 1. Qué hay en el paquete
-El actor exportado corresponde al checkpoint A2/P0 2.000, semilla 7. El archivo .ts contiene la red y su normalización. El .mjb contiene la planta P0 compilada para MuJoCo 3.5.0. El manifiesto fija las huellas, el orden de las 12 articulaciones y la escala. La inferencia exportada se cotejó durante 32 pasos recurrentes con el actor original.
+Se incluyen los actores A2/P0 U2000 y U4000, ambos de la semilla 7. Cada archivo .ts contiene la red y su normalización. El .mjb contiene la planta P0 compartida, compilada para MuJoCo 3.5.0. Los manifiestos fijan las huellas, el orden de las 12 articulaciones y la escala. Para U4000 se cotejaron 32 acciones recurrentes y el reinicio con el actor original.
 
 El ensayo local usa la política entrenada. El ensayo físico usa el controlador Sport de fábrica. El puente oficial Unitree MuJoCo implementa el transporte DDS de bajo nivel en simulación. El adaptador de 47 observaciones y 12 objetivos articulares se comprobó con mensajes del SDK en MuJoCo. La guía del adaptador describe las comprobaciones físicas de tu Go2.
 

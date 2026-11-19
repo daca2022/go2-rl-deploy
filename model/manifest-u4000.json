@@ -1,0 +1,45 @@
+{
+  "source_checkpoint_sha256": "abf8c07012366be5e87b8a6ee4e200a194fc64ff4b421c41d7785baa01142eb8",
+  "source_update": 4000,
+  "source_seed": 7,
+  "inference_parity_steps": 32,
+  "joint_names": [
+    "robot/FL_hip_joint",
+    "robot/FL_thigh_joint",
+    "robot/FL_calf_joint",
+    "robot/FR_hip_joint",
+    "robot/FR_thigh_joint",
+    "robot/FR_calf_joint",
+    "robot/RL_hip_joint",
+    "robot/RL_thigh_joint",
+    "robot/RL_calf_joint",
+    "robot/RR_hip_joint",
+    "robot/RR_thigh_joint",
+    "robot/RR_calf_joint"
+  ],
+  "q0": [
+    -0.1,
+    0.9,
+    -1.8,
+    0.1,
+    0.9,
+    -1.8,
+    -0.1,
+    0.9,
+    -1.8,
+    0.1,
+    0.9,
+    -1.8
+  ],
+  "scale": 0.25,
+  "physics_dt": 0.005,
+  "decimation": 4,
+  "mujoco_version": "3.5.0",
+  "compiled_model_pin": "9dff28b989cbd54bfe6379c73334c76bef6139a349b63549078db46c26f52f73",
+  "files": {
+    "go2-p0.mjb": "9dff28b989cbd54bfe6379c73334c76bef6139a349b63549078db46c26f52f73",
+    "a2-p0-u4000.ts": "a4036a1b0efab08f1c9c01918bd5168da9d7dfca04a1b676f9015234783d66be"
+  },
+  "source_receipt_sha256": "674fb6ece1ce2fc0a208754c2f1c1006813863dfc982cecd962d6325536553b5",
+  "native_actor_sha256": "dd428341b2b4259c9cf498067651c80a934efa83a1b65ad833d61b018c6eaace"
+}

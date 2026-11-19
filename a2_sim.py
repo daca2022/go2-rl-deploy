@@ -13,7 +13,7 @@ from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 from unitree_sdk2py.idl.default import unitree_go_msg_dds__LowState_
 
 from a2_dds import CRC, COMMAND_TOPIC, STATE_TOPIC, SIM_DOMAIN, Latest, LowCmd_, LowState_, MotorCommands, bounded_command_publisher, publisher, state_joints
-from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, MODEL, PERIOD, SDK_IDS, verified_file
+from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, MODEL, PERIOD, POLICY_UPDATES, SDK_IDS, verified_file
 
 
 def run_bridge(output, ticks, view):
@@ -95,8 +95,8 @@ def run_bridge(output, ticks, view):
     print(json.dumps({'simulated_seconds':round(data.time,3), 'fall':False, 'dds_ticks':ticks}))
 
 
-def run_policy(command, ticks):
-    policy = A2Policy()
+def run_policy(command, ticks, policy_update=2000):
+    policy = A2Policy(policy_update)
     rx = Latest(STATE_TOPIC, LowState_)
     tx = bounded_command_publisher()
     encoder = MotorCommands()
@@ -108,13 +108,15 @@ def run_policy(command, ticks):
         targets = policy.step(msg.imu_state.quaternion, msg.imu_state.gyroscope, q, dq, command)
         if not tx.Write(encoder.fill(targets, KP, KD, sim_tick=tick)):
             raise RuntimeError('DDS LowCmd write failed')
-    print(json.dumps({'policy_ticks':policy.tick, 'last_target_rad':targets.tolist()}))
+    print(json.dumps({'policy_update':policy_update, 'policy_ticks':policy.tick,
+                      'last_target_rad':targets.tolist()}))
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('role', choices=('bridge','policy'))
     parser.add_argument('--command', choices=COMMANDS, default='forward')
+    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--csv', type=Path)
     parser.add_argument('--view', action='store_true')
     parser.add_argument('--ticks', type=int, default=1000)
@@ -127,7 +129,7 @@ def main():
     if args.role == 'bridge':
         run_bridge(args.csv, args.ticks, args.view)
     else:
-        run_policy(COMMANDS[args.command], args.ticks)
+        run_policy(COMMANDS[args.command], args.ticks, args.policy_update)
 
 
 if __name__ == '__main__':

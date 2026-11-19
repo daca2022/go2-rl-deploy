@@ -4,6 +4,8 @@ El GRU corre en la PC Ubuntu 22.04. SDK2 Python y CycloneDDS intercambian mensaj
 
 El adaptador toma 47 observaciones de `rt/lowstate` y ejecuta una inferencia a 50 Hz. Conserva la memoria de la GRU durante el ensayo y la reinicia al comienzo. Las salidas son objetivos de posición P0. El orden del actor FL, FR, RL, RR se convierte al orden SDK FR, FL, RR, RL antes de escribir `rt/lowcmd`. Se usa CRC del SDK en los mensajes. En la prueba de banco, el bucle intenta publicar a 500 Hz sosteniendo el objetivo entre inferencias y vigila retrasos. La frecuencia efectiva sobre Ethernet se mide en la PC del ensayo.
 
+Los comandos de esta guía usan U2000 de manera predeterminada. Añade `--policy-update 4000` al proceso `policy` de `a2_sim.py` y a los modos `shadow` o `bench` de `a2_robot.py` para cargar U4000. El perfil de banco y sus límites corresponden a tu unidad. [Comandos de U4000](U4000-Go2.md).
+
 ## Preparar la PC
 
 Si ya tienes el repositorio, usa `git pull --ff-only` dentro de él y pasa a la instalación.

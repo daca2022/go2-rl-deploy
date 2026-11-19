@@ -7,6 +7,7 @@ import numpy as np
 import torch
 
 MODEL = Path(__file__).resolve().parent / 'model'
+POLICY_UPDATES = (2000, 4000)
 COMMANDS = {'forward': (.3, 0., 0.), 'reverse': (-.2, 0., 0.),
             'lateral': (0., .2, 0.), 'yaw': (0., 0., .3)}
 # Unitree SDK LegID groups FR, FL, RR, RL. The actor uses FL, FR, RL, RR.
@@ -31,20 +32,28 @@ def verified_file(spec, name):
     return path
 
 
+def policy_spec(update):
+    if update not in POLICY_UPDATES:
+        raise ValueError(f'Unsupported A2/P0 checkpoint: {update}')
+    manifest = 'manifest.json' if update == 2000 else f'manifest-u{update}.json'
+    spec = json.loads((MODEL / manifest).read_text())
+    if spec['source_update'] != update or spec['joint_names'] != JOINT_NAMES:
+        raise ValueError('Checkpoint identity or joint order differs from the Unitree mapping')
+    if spec['physics_dt'] * spec['decimation'] != PERIOD:
+        raise ValueError('Unexpected policy period')
+    return spec
+
+
 def gravity_body(quat):
     w, x, y, z = quat
     return np.array([2*(w*y-x*z), -2*(y*z+w*x), 2*(x*x+y*y)-1.])
 
 
 class A2Policy:
-    def __init__(self):
-        self.spec = json.loads((MODEL / 'manifest.json').read_text())
-        if self.spec['joint_names'] != JOINT_NAMES:
-            raise ValueError('Model joint order differs from the Unitree mapping')
-        if self.spec['physics_dt'] * self.spec['decimation'] != PERIOD:
-            raise ValueError('Unexpected policy period')
+    def __init__(self, update=2000):
+        self.spec = policy_spec(update)
         torch.set_num_threads(1)
-        path = verified_file(self.spec, 'a2-p0-u2000.ts')
+        path = verified_file(self.spec, f'a2-p0-u{update}.ts')
         self.actor = torch.jit.load(str(path), map_location='cpu').eval()
         self.q0 = np.array(self.spec['q0'], dtype=np.float32)
         self.previous = np.zeros(12, dtype=np.float32)

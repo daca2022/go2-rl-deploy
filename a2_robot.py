@@ -11,7 +11,7 @@ import numpy as np
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 
 from a2_dds import STATE_TOPIC, Latest, LowState_, MotorCommands, bounded_command_publisher, state_joints
-from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, PERIOD, SDK_IDS, SIM_JOINT_RANGE, gravity_body
+from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, PERIOD, POLICY_UPDATES, SDK_IDS, SIM_JOINT_RANGE, gravity_body
 
 SEND_PERIOD = .002
 MAX_STATE_AGE = .04
@@ -90,7 +90,8 @@ def capture(args, rx, encoder, actor):
                              targets.tolist() if targets is not None else ''])
             file.flush()
             time.sleep(PERIOD)
-    print(json.dumps({'mode': args.mode, 'lowcmd_publishers_created': 0, 'csv': str(args.csv)}))
+    print(json.dumps({'mode': args.mode, 'policy_update': args.policy_update if actor else None,
+                      'lowcmd_publishers_created': 0, 'csv': str(args.csv)}))
 
 
 def bench(args, rx, encoder, actor, config):
@@ -188,7 +189,8 @@ def bench(args, rx, encoder, actor, config):
             writer.writerows(records)
     if not first_command:
         raise RuntimeError('Bench window ended without a command')
-    print(json.dumps({'mode':'bench', 'policy_steps':actor.tick, 'csv':str(args.csv)}))
+    print(json.dumps({'mode':'bench', 'policy_update':args.policy_update,
+                      'policy_steps':actor.tick, 'csv':str(args.csv)}))
 
 
 def main():
@@ -198,6 +200,7 @@ def main():
     parser.add_argument('--csv', required=True, type=Path)
     parser.add_argument('--seconds', type=float, required=True)
     parser.add_argument('--command', choices=COMMANDS, default='forward')
+    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--bench-profile', type=Path)
     args = parser.parse_args()
     if args.iface == 'lo' or args.iface not in dict(socket.if_nameindex()).values():
@@ -207,7 +210,7 @@ def main():
     if (args.mode == 'bench') != (args.bench_profile is not None):
         parser.error('Bench requires a verified --bench-profile')
     config = load_profile(args.bench_profile, args.iface) if args.bench_profile else None
-    actor = A2Policy() if args.mode != 'observe' else None
+    actor = A2Policy(args.policy_update) if args.mode != 'observe' else None
     signal.signal(signal.SIGTERM, stop_on_signal)
     ChannelFactoryInitialize(0, args.iface)
     encoder = MotorCommands()

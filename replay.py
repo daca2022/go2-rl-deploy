@@ -2,7 +2,6 @@
 import argparse
 from contextlib import nullcontext
 import csv
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -12,27 +11,25 @@ import mujoco
 import numpy as np
 import torch
 
-COMMANDS = {'forward': (.3, 0., 0.), 'reverse': (-.2, 0., 0.),
-            'lateral': (0., .2, 0.), 'yaw': (0., 0., .3)}
+from a2_policy import COMMANDS, POLICY_UPDATES, policy_spec, verified_file
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=COMMANDS)
     parser.add_argument('--csv', type=Path, required=True)
+    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--view', action='store_true')
     args = parser.parse_args()
-    bundle = Path(__file__).resolve().parent / 'model'
-    spec = json.loads((bundle / 'manifest.json').read_text())
-    for name, expected in spec['files'].items():
-        if hashlib.sha256((bundle / name).read_bytes()).hexdigest() != expected:
-            raise SystemExit(f'Checksum incorrecto: {name}')
+    spec = policy_spec(args.policy_update)
+    actor_path = verified_file(spec, f'a2-p0-u{args.policy_update}.ts')
+    model_path = verified_file(spec, 'go2-p0.mjb')
     if mujoco.__version__ != spec['mujoco_version']:
         raise SystemExit('Instala la versión de MuJoCo indicada en requirements-sim.txt')
 
     torch.set_num_threads(1)
-    policy = torch.jit.load(str(bundle / 'a2-p0-u2000.ts'), map_location='cpu').eval()
-    model = mujoco.MjModel.from_binary_path(str(bundle / 'go2-p0.mjb'))
+    policy = torch.jit.load(str(actor_path), map_location='cpu').eval()
+    model = mujoco.MjModel.from_binary_path(str(model_path))
     data = mujoco.MjData(model)
     mujoco.mj_resetDataKeyframe(model, data, model.key('init_state').id)
     mujoco.mj_forward(model, data)
@@ -88,7 +85,7 @@ def main():
                 break
         else:
             status = '20s_completed'
-    print(json.dumps({'status': status, 'samples': len(errors),
+    print(json.dumps({'status': status, 'policy_update': args.policy_update, 'samples': len(errors),
                       'rmse_xy_m_s': math.sqrt(sum(errors)/len(errors)) if errors else None}))
 
 

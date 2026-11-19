@@ -15,6 +15,8 @@ import time
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+from a2_policy import POLICY_UPDATES
+
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / 'pruebas'
 DIRECTIONS = {
@@ -69,19 +71,20 @@ def network_state(iface):
         return False, f'{iface} · no se pudo leer el estado de red'
 
 
-def job_commands(mode, direction, iface, profile, csv, view):
+def job_commands(mode, direction, iface, profile, csv, view, policy_update=2000):
     command, sport = DIRECTIONS[direction]
+    policy = ['--policy-update', str(policy_update)]
     if mode == 'sim':
         bridge = ['a2_sim.py', 'bridge', '--csv', str(csv)]
         if view:
             bridge += ['--view']
-        return [bridge, ['a2_sim.py', 'policy', '--command', command]]
+        return [bridge, ['a2_sim.py', 'policy', '--command', command, *policy]]
     common = ['--iface', iface, '--csv', str(csv)]
     if mode == 'sport':
         return [['robot.py', *common, '--seconds', '0.5', '--pulse', sport, '--arm']]
     args = ['a2_robot.py', mode, *common, '--seconds', '0.5' if mode == 'bench' else '10']
     if mode in ('bench', 'shadow'):
-        args += ['--command', command]
+        args += ['--command', command, *policy]
     if mode == 'bench':
         args += ['--bench-profile', str(profile)]
     return [args]
@@ -107,6 +110,7 @@ class Panel:
         self.profile = None
         self.mode = tk.StringVar(value=next(iter(MODES)))
         self.direction = tk.StringVar(value=next(iter(DIRECTIONS)))
+        self.policy_update = tk.IntVar(value=POLICY_UPDATES[0])
         self.iface = tk.StringVar()
         self.view = tk.BooleanVar(value=True)
         self.description = tk.StringVar()
@@ -139,7 +143,7 @@ class Panel:
         header = ttk.Frame(frame)
         header.grid(row=0, column=0, sticky='ew', pady=(0, 14))
         ttk.Label(header, text='Unitree Go2', style='Title.TLabel').pack(anchor='w')
-        ttk.Label(header, text='A2/P0  ·  GRU 128  ·  checkpoint 2.000',
+        ttk.Label(header, text='A2/P0  ·  GRU 128',
                   style='Muted.TLabel').pack(anchor='w')
 
         card = ttk.Frame(frame, style='Card.TFrame', padding=(16, 12))
@@ -148,17 +152,18 @@ class Panel:
         self.mode_box = self.combo(card, 0, 'Prueba', self.mode, tuple(MODES))
         self.direction_box = self.combo(card, 1, 'Movimiento', self.direction, tuple(DIRECTIONS))
         self.iface_box = self.combo(card, 2, 'Ethernet', self.iface, wired_interfaces())
+        self.policy_box = self.combo(card, 3, 'Checkpoint GRU', self.policy_update, POLICY_UPDATES)
         self.net_btn = ttk.Button(card, text='Actualizar', command=self.refresh_net)
         self.net_btn.grid(row=2, column=2, padx=(12, 0))
         ttk.Label(card, textvariable=self.net_text, style='Card.TLabel', wraplength=560).grid(
-            row=3, column=1, columnspan=2, sticky='w', pady=(2, 8))
+            row=4, column=1, columnspan=2, sticky='w', pady=(2, 8))
         self.options = ttk.Frame(card, style='Card.TFrame')
-        self.options.grid(row=4, column=1, columnspan=2, sticky='w')
+        self.options.grid(row=5, column=1, columnspan=2, sticky='w')
         self.view_button = ttk.Checkbutton(self.options, text='Abrir visor MuJoCo', variable=self.view)
         self.profile_button = ttk.Button(self.options, text='Elegir perfil', command=self.choose_profile)
         self.profile_text = ttk.Label(self.options, textvariable=self.profile_label, style='Card.TLabel')
         ttk.Label(card, textvariable=self.description, style='Card.TLabel', wraplength=615).grid(
-            row=5, column=0, columnspan=3, sticky='w', pady=(10, 0))
+            row=6, column=0, columnspan=3, sticky='w', pady=(10, 0))
 
         actions = ttk.Frame(frame)
         actions.grid(row=2, column=0, sticky='ew', pady=12)
@@ -225,6 +230,7 @@ class Panel:
         self.mode_box.configure(state='disabled' if busy else 'readonly')
         self.direction_box.configure(state='disabled' if busy or mode == 'observe' else 'readonly')
         self.iface_box.configure(state='disabled' if busy or mode == 'sim' else 'readonly')
+        self.policy_box.configure(state='disabled' if busy or mode in ('observe', 'sport') else 'readonly')
         self.net_btn.configure(state='disabled' if busy else 'normal')
         self.start_button.configure(state='disabled' if busy else 'normal')
         self.stop_button.configure(state='normal' if busy and not self.job.stopping else 'disabled')
@@ -236,6 +242,7 @@ class Panel:
             return
         mode = MODES[self.mode.get()]
         direction = self.direction.get()
+        policy_update = self.policy_update.get()
         iface = self.iface.get()
         if mode != 'sim':
             linked, label = network_state(iface)
@@ -247,20 +254,22 @@ class Panel:
             messagebox.showwarning('Perfil de banco', 'Selecciona el perfil verificado de tu Go2.', parent=self.root)
             return
         if mode in ('sport', 'bench'):
-            control = 'Sport de fábrica' if mode == 'sport' else 'GRU A2/P0'
+            control = 'Sport de fábrica' if mode == 'sport' else f'GRU A2/P0 U{policy_update}'
             if not messagebox.askyesno('Confirmar movimiento físico',
                                        f'{direction} · {control} · hasta 0,5 s\n\n{INFO[mode]}\n\n'
                                        'Confirma que el operador puede accionar el paro físico.',
                                        default='no', parent=self.root):
                 return
         started = datetime.now().strftime('%Y%m%d-%H%M%S-%f')
-        csv = OUTPUT / f'{started}-{mode}.csv'
+        suffix = f'-u{policy_update}' if mode in ('sim', 'shadow', 'bench') else ''
+        csv = OUTPUT / f'{started}-{mode}{suffix}.csv'
         job = Job(mode, direction, csv, time.monotonic() + WALL_SECONDS[mode])
         self.job = job
         self.status.set(f'En curso · {direction}' if mode != 'observe' else 'Leyendo telemetría')
         self.write_log(csv.name)
         self.update_controls()
-        for index, argv in enumerate(job_commands(mode, direction, iface, self.profile, csv, self.view.get())):
+        commands = job_commands(mode, direction, iface, self.profile, csv, self.view.get(), policy_update)
+        for index, argv in enumerate(commands):
             log_file = csv.with_suffix(f'.{index+1}.log')
             try:
                 with log_file.open('xb') as log:
