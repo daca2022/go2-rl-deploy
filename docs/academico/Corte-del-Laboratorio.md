@@ -17,7 +17,7 @@
 | Comparación A0/A1/A2 con P0/T0 | Seis constructores, PPO corto y recarga verificados en CPU. El protocolo empareja 140 episodios por corrida. |
 | Reanudación DC | Igualdad de trayectoria, optimizador y estado aleatorio al reanudar una actualización verificada de A1/DC/P0 en CPU. |
 
-Los cinco cortes usan el mismo filtro nominal de 0,10 m/s. Los retos de cada corte difieren en dificultad y condición. U2400 conserva el único filtro nominal completo aprobado. La selección A2 sigue pendiente del contraste emparejado de U2400 con la referencia U2000. El CSV contiene 100 episodios verificados de la corrida original y 25 nuevos de la recuperación. El intento interrumpido de U4000 dejó 17 episodios parciales que se excluyeron. El [resumen de evidencia](Evidencia-Recuperacion-A2.json) fija las huellas y los costes. Los números de U2800 en la continuación pertenecen a esa rama y son distintos de los resultados del A2 U2800 original.
+Los cinco cortes usan el mismo filtro nominal de 0,10 m/s. Los retos de cada corte difieren en dificultad y condición. U2400 conserva el único filtro nominal completo aprobado. En 8 pares de desarrollo (16 episodios), U4000 completó 6/6 sin caída y aprobó 3/6 en pendiente; U2400 completó 4/6 y aprobó 2/6. Con masa y retardo ambos completaron 2/2; U4000 aprobó 1/2 y U2400 0/2. U4000 queda como candidato de desarrollo por estabilidad. U2400 conserva el filtro nominal completo. La selección formal sigue pendiente. El CSV contiene 100 episodios verificados de la corrida original y 25 nuevos de la recuperación. El intento interrumpido de U4000 dejó 17 episodios parciales que se excluyeron. El [resumen de evidencia](Evidencia-Recuperacion-A2.json) fija las huellas y los costes. Los números de U2800 en la continuación pertenecen a esa rama y son distintos de los resultados del A2 U2800 original.
 
 El plan maestro conserva 42 de 56 entradas cerradas. Quedan la validación reservada, la comparación de calidad, las cuatro habilidades y la verificación final. Los lanzamientos GPU corresponden al operador.
 
@@ -41,3 +41,5 @@ El informe de campaña del panel conserva una instantánea verificada del entren
 - [Datos de desarrollo A2](Desarrollo-A2-Continuacion.csv)
 - [Informe PDF](Informe-Proyecto-Final.pdf) y [presentación](Presentacion-Go2.pptx)
 - [Carpeta pública de Drive](https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS)
+
+[Datos emparejados](Comparacion-U2400-U4000.csv) · [Evidencia](Evidencia-Comparacion-A2.json) · [Video en pendiente](Demo-U2400-U4000-Pendiente.mp4).

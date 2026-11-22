@@ -11,7 +11,7 @@
 \vspace{.35em}
 {\Large PPO y control articular de posición en MuJoCo\par}
 \vspace{.9em}
-{\color{gris}Robótica avanzada · Ciclo 2026-2 · 18 de noviembre de 2026\par}
+{\color{gris}Robótica avanzada · Ciclo 2026-2 · 22 de noviembre de 2026\par}
 
 \section{Introducción}
 Generar locomoción cuadrúpeda exige coordinar doce articulaciones, mantener el equilibrio durante los cambios de apoyo y seguir consignas de velocidad. Se implementó un controlador que combina una política entrenada con aprendizaje por refuerzo y realimentación proporcional-derivativa (PD). Se ensayó en MuJoCo \cite{todorov2012} con avance, retroceso, desplazamiento lateral y giro.
@@ -152,7 +152,7 @@ El CSV documenta los 278 episodios registrados junto con la marca de pertenencia
 
 
 \newpage
-\section*{Anexo de avance · 18 de noviembre de 2026}
+\section*{Anexo de avance · 22 de noviembre de 2026}
 
 \subsection*{Demostración lateral A2/P0}
 El replay del GRU U2000 ejecutó 1.000 decisiones y 4.000 subpasos físicos en MuJoCo CPU. La demostración duró 20 s, con cero caídas según el criterio diagnóstico. Ante una consigna lateral de \(0{,}20\) m/s, la velocidad lateral media fue \(0{,}11021\) m/s y el RMSE planar fue \(0{,}09483\) m/s. El video y el CSV de telemetría permiten revisar tanto el desplazamiento como el margen de seguimiento.
@@ -172,7 +172,7 @@ U4000 & 15/20 & 20/20 & Masa +10\% y 20 ms de retardo. 5/5 al horizonte y 2/5 ap
 \bottomrule
 \end{tabularx}
 
-En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. En U3200, el avance bajó a \(0{,}09554\) m/s y recuperó el aprobado en 5/5. En U3600 volvió a bajar a \(0{,}07068\) m/s. El lateral pasó de \(0{,}12083\) a \(0{,}12059\) m/s y conservó 0/5 aprobados. El reto de retardo de 20 ms completó 5/5 al horizonte, con 3/5 aprobados y RMSE medio de \(0{,}08400\) m/s. La calificación se aplica por episodio y conserva el monitor de trote. Los retos entre cortes difieren en condición. U2400 conserva el único filtro nominal completo aprobado. En U4000, el lateral bajó a \(0{,}11120\) m/s, con 0/5 aprobados. Los 25 episodios llegaron a 20 s sin caída. Quedan por contrastar U2400 y U2000 en escenarios emparejados antes de elegir el checkpoint que irá a los 140 episodios reservados.
+En U2800, avance y lateral nominales alcanzaron el horizonte con RMSE medio de \(0{,}13513\) y \(0{,}10729\) m/s. Ambos exceden el límite de \(0{,}10\) m/s. En U3200, el avance bajó a \(0{,}09554\) m/s y recuperó el aprobado en 5/5. En U3600 volvió a bajar a \(0{,}07068\) m/s. El lateral pasó de \(0{,}12083\) a \(0{,}12059\) m/s y conservó 0/5 aprobados. El reto de retardo de 20 ms completó 5/5 al horizonte, con 3/5 aprobados y RMSE medio de \(0{,}08400\) m/s. La calificación se aplica por episodio y conserva el monitor de trote. Los retos entre cortes difieren en condición. U2400 conserva el único filtro nominal completo aprobado. En U4000, el lateral bajó a \(0{,}11120\) m/s, con 0/5 aprobados. Los 25 episodios llegaron a 20 s sin caída. En 8 pares de desarrollo (16 episodios), U4000 completó 6/6 sin caída y aprobó 3/6 en pendiente. U2400 completó 4/6 y aprobó 2/6. Con masa y retardo ambos completaron 2/2. U4000 aprobó 1/2 y U2400 0/2. El contraste usa consignas y realizaciones emparejadas en MuJoCo CPU. U4000 queda como candidato de desarrollo por estabilidad. U2400 conserva la evidencia de seguimiento nominal. La validación reservada con recibo oficial sigue pendiente.
 
 \subsection*{Preparación de la campaña}
 Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, PPO corto y la recarga de checkpoints. El catálogo de 2.800 actualizaciones conserva los 140 episodios emparejados por celda. El entrenamiento original A2/P0 tiene un recibo CUDA verificado por 4.300.800 transiciones y 8 h 45 min de pared. Cada celda conserva su validación reservada pendiente. La campaña de calidad y el cierre de las cuatro habilidades siguen pendientes. La prueba de reanudación DC en CPU reprodujo una actualización completa en otro proceso con igualdad de acciones, física y estado de entrenamiento. Quedan por verificar su uso en producción y su contabilidad acumulada de pared y disco.

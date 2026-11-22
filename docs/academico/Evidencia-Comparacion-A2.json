@@ -1,0 +1,39 @@
+{
+  "scope": "desarrollo en simulación MuJoCo CPU",
+  "episodios": 16,
+  "pares": 8,
+  "tiempo_cpu_pared_s": 1354.325,
+  "tope_s": 7200,
+  "pendiente": {
+    "U2400": {
+      "without_fall": 4,
+      "pass": 2,
+      "falls": 2,
+      "n": 6
+    },
+    "U4000": {
+      "without_fall": 6,
+      "pass": 3,
+      "falls": 0,
+      "n": 6
+    }
+  },
+  "masa_y_retardo": {
+    "U2400": {
+      "without_fall": 2,
+      "pass": 0,
+      "falls": 0,
+      "n": 2
+    },
+    "U4000": {
+      "without_fall": 2,
+      "pass": 1,
+      "falls": 0,
+      "n": 2
+    }
+  },
+  "episodios_reservados": 0,
+  "sha256_recibo_fuente": "d4bdad27bdc9cf2e3cfd75c162ee6d77f8f249d7bb2f5847efc9da23e4231927",
+  "sha256_datos_fuente": "fb50e1d2a0aa5ea34a9f46fb3a4d42d946ba48f348d6dbeb8ebe826c758b5aee",
+  "sha256_video": "5639fb3237d5d2ddccfc17f0a305c0ec8e7b604a097588ca73617fd304fe086f"
+}

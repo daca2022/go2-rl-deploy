@@ -18,6 +18,9 @@
 | [Lateral A2/P0](Demo-A2-U2000-Lateral-20s.mp4), [telemetría](Telemetria-A2-U2000.csv) y [huellas](Evidencia-A2-U2000.json) | Demostración de 20 s en MuJoCo CPU. |
 | [Último corte verificado](Corte-del-Laboratorio.md) y [desarrollo A2](Desarrollo-A2-Continuacion.csv) | Estado fechado y 125 episodios de desarrollo. |
 | [Evidencia de recuperación A2](Evidencia-Recuperacion-A2.json) | Recibo, huellas, costes y métricas del corte U4000. |
+| [Comparación U2400/U4000](Comparacion-U2400-U4000.csv) | 16 episodios emparejados de desarrollo en MuJoCo CPU. |
+| [Recibo resumido](Evidencia-Comparacion-A2.json) | Huellas y resultados por condición. |
+| [Video comparativo](Demo-U2400-U4000-Pendiente.mp4) | Replay emparejado en pendiente de +5°. |
 | [Celdas de campaña](Campana-Progresiva-Celdas.csv), [costes](Campana-Progresiva-Costes.csv) y [recibos resumidos](Campana-Progresiva-Resumen.json) | Una de seis celdas con entrenamiento verificado. Validaciones reservadas pendientes. |
 | [Resultados A2 por DDS](../Prueba-A2-DDS.json) | Cuatro ensayos de 20 s del actor exportado en MuJoCo. |
 
@@ -37,6 +40,6 @@ Abre el archivo Draw.io en [diagrams.net](https://app.diagrams.net/) mediante **
 
 ## Mantener al día la entrega
 
-Cada publicación parte de evidencia verificable y queda fechada en Corte-del-Laboratorio.md. Actualiza primero los datos y luego el informe, la presentación y los diagramas que dependan de ellos. Abre los archivos generados antes de publicar. GitHub conserva el historial. En Drive, reemplaza los archivos vigentes en sus mismos enlaces y añade los nuevos por separado. Coteja la huella SHA-256 de ambas copias públicas con la de cada archivo local y registra el commit. Descarga el PPTX y los dos MP4 para exponer sin conexión.
+Cada publicación parte de evidencia verificable y queda fechada en Corte-del-Laboratorio.md. Actualiza primero los datos y luego el informe, la presentación y los diagramas que dependan de ellos. Abre los archivos generados antes de publicar. GitHub conserva el historial. En Drive, reemplaza los archivos vigentes en sus mismos enlaces y añade los nuevos por separado. Coteja la huella SHA-256 de ambas copias públicas con la de cada archivo local y registra el commit. Descarga el PPTX y los tres MP4 para exponer sin conexión.
 
 El constructor editable de la presentación es Construir-Presentacion.mjs. Usa el paquete @oai/artifact-tool y las imágenes de esta carpeta. El PDF de diapositivas se obtiene exportando el PPTX. El README de la raíz enlaza esta entrega y el panel de simulación.

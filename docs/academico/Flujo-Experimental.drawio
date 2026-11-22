@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <mxfile host="app.diagrams.net">
   <diagram id="control" name="Control y simulación">
     <mxGraphModel grid="1" gridSize="10" guides="1" page="1" pageScale="1" pageWidth="1120" pageHeight="520" background="#FFFFFF">
@@ -112,7 +111,7 @@
         <mxCell id="title" value="Selección y validación del GRU A2/P0" style="text;html=1;strokeColor=none;fillColor=none;align=left;whiteSpace=wrap;fontFamily=Arial;fontSize=30;fontStyle=1;fontColor=#193045;" parent="1" vertex="1">
           <mxGeometry x="40" y="30" width="960" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="subtitle" value="Continuación desde U2000 con práctica de pendiente, masa y retardo" style="text;html=1;strokeColor=none;fillColor=none;align=left;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#4A5C6A;" parent="1" vertex="1">
+        <mxCell id="subtitle" value="A2/P0: cinco cortes de desarrollo y contraste emparejado U2400/U4000" style="text;html=1;strokeColor=none;fillColor=none;align=left;whiteSpace=wrap;fontFamily=Arial;fontSize=16;fontColor=#4A5C6A;" parent="1" vertex="1">
           <mxGeometry x="40" y="87" width="960" height="32" as="geometry" />
         </mxCell>
         <mxCell id="train" value="&lt;b&gt;Continuación CUDA&lt;/b&gt;&lt;br&gt;U2000 a U4000&lt;br&gt;5 bloques verificados" style="rounded=1;arcSize=10;html=1;whiteSpace=wrap;fillColor=#EAF4F3;strokeColor=#116A61;fontColor=#193045;fontFamily=Arial;fontSize=15;spacing=8;" parent="1" vertex="1">
