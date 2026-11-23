@@ -72,24 +72,40 @@ def stop_on_signal(_signum, _frame):
 def capture(args, rx, encoder, actor):
     started = time.monotonic()
     last = None
+    stream = None
+    if args.commands_stdin:
+        from teleop_input import StdinCommands, VELOCITIES
+
+        stream = StdinCommands(0)
     with args.csv.open('x', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['pc_time_s', 'dds_tick', 'age_ms', 'imu_wxyz', 'gyro_rad_s',
-                         'q_sdk_in_actor_order_rad', 'dq_sdk_in_actor_order_rad_s', 'tau_est_sdk_nm',
-                         'target_rad_assuming_matching_frames'])
+        header = ['pc_time_s', 'dds_tick', 'age_ms', 'imu_wxyz', 'gyro_rad_s',
+                  'q_sdk_in_actor_order_rad', 'dq_sdk_in_actor_order_rad_s', 'tau_est_sdk_nm',
+                  'target_rad_assuming_matching_frames']
+        writer.writerow(header + (['request', 'cmd_vx', 'cmd_vy', 'cmd_yaw', 'policy_ms'] if stream else []))
+        if stream:
+            print("SHADOW_INPUT_READY", flush=True)
         while time.monotonic() - started < args.seconds:
+            cycle_started = time.monotonic()
             msg, stamp = rx.wait(lambda m, _: m.tick != last, .1)
             if time.monotonic()-stamp > MAX_STATE_AGE:
                 raise TimeoutError('Stale LowState')
             last = msg.tick
             q, dq, quat, gyro = inspect_state(msg, encoder)
-            targets = actor.step(quat, gyro, q, dq, COMMANDS[args.command]) if actor else None
-            writer.writerow([time.monotonic()-started, last, (time.monotonic()-stamp)*1000,
-                             quat.tolist(), gyro.tolist(), q.tolist(), dq.tolist(),
-                             [msg.motor_state[i].tau_est for i in SDK_IDS],
-                             targets.tolist() if targets is not None else ''])
+            key = stream.sample(time.monotonic()) if stream else None
+            request = VELOCITIES[key] if stream else COMMANDS[args.command]
+            policy_started = time.monotonic()
+            targets = actor.step(quat, gyro, q, dq, request) if actor else None
+            policy_ms = (time.monotonic()-policy_started)*1000
+            row = [time.monotonic()-started, last, (time.monotonic()-stamp)*1000,
+                   quat.tolist(), gyro.tolist(), q.tolist(), dq.tolist(),
+                   [msg.motor_state[i].tau_est for i in SDK_IDS],
+                   targets.tolist() if targets is not None else '']
+            writer.writerow(row + ([key, *request, policy_ms] if stream else []))
             file.flush()
-            time.sleep(PERIOD)
+            if stream and stream.closed:
+                break
+            time.sleep(max(0., PERIOD - (time.monotonic() - cycle_started)) if stream else PERIOD)
     print(json.dumps({'mode': args.mode, 'policy_update': args.policy_update if actor else None,
                       'lowcmd_publishers_created': 0, 'csv': str(args.csv)}))
 
@@ -202,6 +218,7 @@ def main():
     parser.add_argument('--command', choices=COMMANDS, default='forward')
     parser.add_argument('--policy-update', type=parse_policy_update, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--bench-profile', type=Path)
+    parser.add_argument('--commands-stdin', action='store_true', help='recibir teclas por stdin, solo en shadow')
     args = parser.parse_args()
     if args.iface == 'lo' or args.iface not in dict(socket.if_nameindex()).values():
         parser.error('Select the Go2 Ethernet interface')
@@ -209,6 +226,8 @@ def main():
         parser.error('Bench duration is limited to 0.5 s, observation to 60 s')
     if (args.mode == 'bench') != (args.bench_profile is not None):
         parser.error('Bench requires a verified --bench-profile')
+    if args.commands_stdin and args.mode != 'shadow':
+        parser.error('--commands-stdin solo está disponible en shadow')
     config = load_profile(args.bench_profile, args.iface) if args.bench_profile else None
     actor = A2Policy(args.policy_update) if args.mode != 'observe' else None
     signal.signal(signal.SIGTERM, stop_on_signal)

@@ -1,0 +1,71 @@
+{
+  "scope": "development, flat floor in MuJoCo CPU; no hardware runs",
+  "policy": "student",
+  "policy_sha256": "2b3f645b4607c5d83a310b3a1f0559e12aeb2aed9fc6448d974b56e40bee30a1",
+  "goal_tolerance_m": 0.02,
+  "keyboard_window": [
+    "space_plus_direction",
+    "space_release",
+    "focus_loss"
+  ],
+  "ssh_fixture": {
+    "ready_handshake": true,
+    "inputs_sent": [
+      "w",
+      "stop",
+      "a",
+      "stop"
+    ]
+  },
+  "shadow_capture_fixture": {
+    "telemetry": "synthetic SDK LowState messages with valid CRC; real TorchScript weights",
+    "observed_requests": [
+      "w",
+      "stop",
+      "a",
+      "stop"
+    ],
+    "ended_on_stdin_eof": true,
+    "publisher_count": 0
+  },
+  "cases": {
+    "release-demo": {
+      "simulated_s": 10.0,
+      "falls": 0,
+      "displacement_m": [
+        0.2638229825545337,
+        0.13209432791411813
+      ],
+      "first_step_with_stop_after_release_s": 3.04,
+      "first_step_with_stop_after_input_loss_s": 7.28,
+      "final_speed_m_s": 0.018470272083434523
+    },
+    "forward-5cm": {
+      "simulated_s": 5.74,
+      "falls": 0,
+      "displacement_m": [
+        0.04964047095102912,
+        0.01175969248611959
+      ],
+      "goal_error_m": 0.011765187142801913
+    },
+    "reverse-5cm": {
+      "simulated_s": 4.58,
+      "falls": 0,
+      "displacement_m": [
+        -0.05902875908277783,
+        0.015085980957107514
+      ],
+      "goal_error_m": 0.017581391071614716
+    },
+    "local-target": {
+      "simulated_s": 6.96,
+      "falls": 0,
+      "displacement_m": [
+        0.2486839728221762,
+        0.11519424073834769
+      ],
+      "goal_error_m": 0.015251127143514192
+    }
+  }
+}

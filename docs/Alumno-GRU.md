@@ -30,6 +30,8 @@ cd ~/go2-rl-deploy
 
 Usa `reverse`, `lateral` o `yaw` en lugar de `forward` para comprobar las otras consignas. El visor ejecuta un episodio de 20 s. Para usar el panel, ejecuta `bash abrir-panel.sh`, selecciona `student` y marca la opción de visualización de MuJoCo.
 
+[Mando por teclado, avance de 5 cm y destinos en MuJoCo](Teleoperacion-GRU.md).
+
 ## Go2 real por Ethernet
 
 Conecta el cable de desarrollo y deja el Go2 quieto. Usa `ip -br addr` para identificar la interfaz. Si tu unidad conserva la red estándar de Unitree, configura `192.168.123.99/24` en la PC, sin gateway en ese enlace. Cambia `enp3s0` por el nombre de tu interfaz.
