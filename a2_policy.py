@@ -7,7 +7,16 @@ import numpy as np
 import torch
 
 MODEL = Path(__file__).resolve().parent / 'model'
-POLICY_UPDATES = (2000, 4000)
+POLICY_UPDATES = (2000, 4000, "student")
+
+
+def parse_policy_update(value):
+    return "student" if value == "student" else int(value)
+
+
+def actor_filename(update):
+    return "a2-p0-student.ts" if update == "student" else f"a2-p0-u{update}.ts"
+
 COMMANDS = {'forward': (.3, 0., 0.), 'reverse': (-.2, 0., 0.),
             'lateral': (0., .2, 0.), 'yaw': (0., 0., .3)}
 # Unitree SDK LegID groups FR, FL, RR, RL. The actor uses FL, FR, RL, RR.
@@ -35,7 +44,7 @@ def verified_file(spec, name):
 def policy_spec(update):
     if update not in POLICY_UPDATES:
         raise ValueError(f'Unsupported A2/P0 checkpoint: {update}')
-    manifest = 'manifest.json' if update == 2000 else f'manifest-u{update}.json'
+    manifest = {2000: 'manifest.json', 4000: 'manifest-u4000.json', 'student': 'manifest-student.json'}[update]
     spec = json.loads((MODEL / manifest).read_text())
     if spec['source_update'] != update or spec['joint_names'] != JOINT_NAMES:
         raise ValueError('Checkpoint identity or joint order differs from the Unitree mapping')
@@ -53,7 +62,7 @@ class A2Policy:
     def __init__(self, update=2000):
         self.spec = policy_spec(update)
         torch.set_num_threads(1)
-        path = verified_file(self.spec, f'a2-p0-u{update}.ts')
+        path = verified_file(self.spec, actor_filename(update))
         self.actor = torch.jit.load(str(path), map_location='cpu').eval()
         self.q0 = np.array(self.spec['q0'], dtype=np.float32)
         self.previous = np.zeros(12, dtype=np.float32)

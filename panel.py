@@ -110,7 +110,7 @@ class Panel:
         self.profile = None
         self.mode = tk.StringVar(value=next(iter(MODES)))
         self.direction = tk.StringVar(value=next(iter(DIRECTIONS)))
-        self.policy_update = tk.IntVar(value=POLICY_UPDATES[0])
+        self.policy_update = tk.StringVar(value='student')
         self.iface = tk.StringVar()
         self.view = tk.BooleanVar(value=True)
         self.description = tk.StringVar()
@@ -254,7 +254,7 @@ class Panel:
             messagebox.showwarning('Perfil de banco', 'Selecciona el perfil verificado de tu Go2.', parent=self.root)
             return
         if mode in ('sport', 'bench'):
-            control = 'Sport de fábrica' if mode == 'sport' else f'GRU A2/P0 U{policy_update}'
+            control = {'sport': 'Sport de fábrica', 'bench': f'GRU A2/P0 · {policy_update}'}[mode]
             if not messagebox.askyesno('Confirmar movimiento físico',
                                        f'{direction} · {control} · hasta 0,5 s\n\n{INFO[mode]}\n\n'
                                        'Confirma que el operador puede accionar el paro físico.',

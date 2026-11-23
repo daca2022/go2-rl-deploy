@@ -11,7 +11,7 @@ import numpy as np
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 
 from a2_dds import STATE_TOPIC, Latest, LowState_, MotorCommands, bounded_command_publisher, state_joints
-from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, PERIOD, POLICY_UPDATES, SDK_IDS, SIM_JOINT_RANGE, gravity_body
+from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, PERIOD, POLICY_UPDATES, SDK_IDS, SIM_JOINT_RANGE, gravity_body, parse_policy_update
 
 SEND_PERIOD = .002
 MAX_STATE_AGE = .04
@@ -200,7 +200,7 @@ def main():
     parser.add_argument('--csv', required=True, type=Path)
     parser.add_argument('--seconds', type=float, required=True)
     parser.add_argument('--command', choices=COMMANDS, default='forward')
-    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
+    parser.add_argument('--policy-update', type=parse_policy_update, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--bench-profile', type=Path)
     args = parser.parse_args()
     if args.iface == 'lo' or args.iface not in dict(socket.if_nameindex()).values():

@@ -1,0 +1,53 @@
+{
+  "scope": "mujoco_dds_loopback",
+  "dds_domain": 19,
+  "interface": "lo",
+  "selected_policy": "student",
+  "hardware_commands_sent": 0,
+  "cases": {
+    "forward": {
+      "episode_seconds": 20,
+      "falls": 0,
+      "dds_ticks": 1000,
+      "csv_sha256": "594826ac0c1db48e6239f3dacf9fcd94dff750d67ec69808696818266b43acd3",
+      "mean_velocity": [
+        0.2892847946218687,
+        0.0031751750173195726,
+        0.003468404889142225
+      ]
+    },
+    "reverse": {
+      "episode_seconds": 20,
+      "falls": 0,
+      "dds_ticks": 1000,
+      "csv_sha256": "80b74685dd040a7501393e50df3f8886679eca08668d04215e01de277679f542",
+      "mean_velocity": [
+        -0.1590992914392018,
+        0.017877520976719834,
+        0.016713812491708266
+      ]
+    },
+    "lateral": {
+      "episode_seconds": 20,
+      "falls": 0,
+      "dds_ticks": 1000,
+      "csv_sha256": "5cacc7eade44bad21760b207308b434dabf48e0e633ed1660d4fe19ddbdf2a53",
+      "mean_velocity": [
+        -0.0011648013705523512,
+        0.08906586805123198,
+        0.010148048799682282
+      ]
+    },
+    "yaw": {
+      "episode_seconds": 20,
+      "falls": 0,
+      "dds_ticks": 1000,
+      "csv_sha256": "32c431eaf9d25fc26857b77ac2ecd6bc1fe9c590317c21cc23bd6f0e7ce55863",
+      "mean_velocity": [
+        0.02219247807447134,
+        0.006631522052822035,
+        0.2537090467107251
+      ]
+    }
+  }
+}

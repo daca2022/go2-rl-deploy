@@ -1,28 +1,54 @@
 """Replay the frozen A2/P0 actor on CPU and save commanded and measured motion."""
 import argparse
-from contextlib import nullcontext
+from contextlib import contextmanager, nullcontext
 import csv
 import json
 import math
 from pathlib import Path
+import subprocess
 import time
 
 import mujoco
 import numpy as np
 import torch
 
-from a2_policy import COMMANDS, POLICY_UPDATES, policy_spec, verified_file
+from a2_policy import COMMANDS, POLICY_UPDATES, policy_spec, verified_file, parse_policy_update, actor_filename
+
+
+@contextmanager
+def record_video(model, data, path):
+    camera = mujoco.MjvCamera()
+    camera.distance = 1.55
+    camera.azimuth = 105
+    camera.elevation = -18
+    with mujoco.Renderer(model, width=640, height=480) as renderer:
+        argv = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-n", "-f", "rawvideo", "-pixel_format",
+                "rgb24", "-video_size", "640x480", "-framerate", "25", "-i", "-", "-pix_fmt", "yuv420p",
+                "-movflags", "+faststart", str(path)]
+        with subprocess.Popen(argv, stdin=subprocess.PIPE) as encoder:
+            def capture():
+                camera.lookat[:] = data.qpos[:3]
+                renderer.update_scene(data, camera=camera)
+                encoder.stdin.write(renderer.render().tobytes())
+
+            try:
+                yield capture
+            finally:
+                encoder.stdin.close()
+            if encoder.wait():
+                raise RuntimeError("FFmpeg could not save the MuJoCo video")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=COMMANDS)
     parser.add_argument('--csv', type=Path, required=True)
-    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
+    parser.add_argument('--policy-update', type=parse_policy_update, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--view', action='store_true')
+    parser.add_argument('--video', type=Path)
     args = parser.parse_args()
     spec = policy_spec(args.policy_update)
-    actor_path = verified_file(spec, f'a2-p0-u{args.policy_update}.ts')
+    actor_path = verified_file(spec, actor_filename(args.policy_update))
     model_path = verified_file(spec, 'go2-p0.mjb')
     if mujoco.__version__ != spec['mujoco_version']:
         raise SystemExit('Instala la versión de MuJoCo indicada en requirements-sim.txt')
@@ -48,7 +74,8 @@ def main():
         context = launch_passive(model, data)
     errors = []
     status = 'viewer_closed'
-    with args.csv.open('x', newline='') as file, context as viewer, torch.inference_mode():
+    video = record_video(model, data, args.video) if args.video else nullcontext(None)
+    with args.csv.open('x', newline='') as file, context as viewer, video as capture, torch.inference_mode():
         writer = csv.writer(file)
         writer.writerow(['t_s', 'cmd_vx_m_s', 'cmd_vy_m_s', 'cmd_yaw_rad_s',
                          'vx_m_s', 'vy_m_s', 'yaw_rad_s', 'base_height_m', 'fall_diagnostic'])
@@ -77,6 +104,8 @@ def main():
             errors.append((vx-command[0])**2+(vy-command[1])**2)
             fell = bool(data.qpos[2] < .16 or rotation[8] < .5)
             writer.writerow([round(data.time, 3), *command, vx, vy, data.qvel[5], data.qpos[2], int(fell)])
+            if capture is not None and tick % 2 == 0:
+                capture()
             if viewer is not None:
                 viewer.sync()
                 time.sleep(max(0., dt - (time.monotonic()-start)))

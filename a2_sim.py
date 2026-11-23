@@ -13,7 +13,7 @@ from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 from unitree_sdk2py.idl.default import unitree_go_msg_dds__LowState_
 
 from a2_dds import CRC, COMMAND_TOPIC, STATE_TOPIC, SIM_DOMAIN, Latest, LowCmd_, LowState_, MotorCommands, bounded_command_publisher, publisher, state_joints
-from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, MODEL, PERIOD, POLICY_UPDATES, SDK_IDS, verified_file
+from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, MODEL, PERIOD, POLICY_UPDATES, SDK_IDS, verified_file, parse_policy_update
 
 
 def run_bridge(output, ticks, view):
@@ -116,7 +116,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('role', choices=('bridge','policy'))
     parser.add_argument('--command', choices=COMMANDS, default='forward')
-    parser.add_argument('--policy-update', type=int, choices=POLICY_UPDATES, default=2000)
+    parser.add_argument('--policy-update', type=parse_policy_update, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--csv', type=Path)
     parser.add_argument('--view', action='store_true')
     parser.add_argument('--ticks', type=int, default=1000)
