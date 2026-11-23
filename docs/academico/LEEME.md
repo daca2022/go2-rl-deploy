@@ -43,3 +43,7 @@ Abre el archivo Draw.io en [diagrams.net](https://app.diagrams.net/) mediante **
 Cada publicación parte de evidencia verificable y queda fechada en Corte-del-Laboratorio.md. Actualiza primero los datos y luego el informe, la presentación y los diagramas que dependan de ellos. Abre los archivos generados antes de publicar. GitHub conserva el historial. En Drive, reemplaza los archivos vigentes en sus mismos enlaces y añade los nuevos por separado. Coteja la huella SHA-256 de ambas copias públicas con la de cada archivo local y registra el commit. Descarga el PPTX y los tres MP4 para exponer sin conexión.
 
 El constructor editable de la presentación es Construir-Presentacion.mjs. Usa el paquete @oai/artifact-tool y las imágenes de esta carpeta. El PDF de diapositivas se obtiene exportando el PPTX. El README de la raíz enlaza esta entrega y el panel de simulación.
+
+## Alumno GRU
+
+[Datos de 40 episodios reservados](Alumno-GRU-Episodios.csv) · [Recibo público](Alumno-GRU-Reservada.json) · [Demostración de avance en MuJoCo](Demo-Alumno-GRU-Avance.mp4) · [Guía de mando y sombra](../Teleoperacion-GRU.md).

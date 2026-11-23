@@ -161,7 +161,15 @@ function label(s,title,body,x,y,w) {
   text(s,"Campaña con 1 de 6 entrenamientos y 0 validaciones verificadas.",65,516,1140,38,24,{color:C.quiet});
   text(s,"Siguiente hito",65,578,255,36,26,{bold:true,color:C.teal});
   text(s,"U4000 es candidato de desarrollo por estabilidad. La validación formal sigue pendiente.",342,568,865,63,24);
-  note(s,"13:00–15:00. La recuperación a U4000 quedó verificada. Los cinco cortes suman 125 episodios de desarrollo. La validación reservada sigue pendiente. El maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Sentarse duró 6 s sin sostén válido y pronking 20 s con cero vuelos válidos. Se verificaron 5.200 subpasos entre ambos episodios. Los 12 cambios de entrada conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
+  note(s,"13:00–15:00. La recuperación a U4000 quedó verificada. Los cinco cortes suman 125 episodios de desarrollo. La validación de la matriz sigue pendiente. En el diagnóstico inicial, el maestro realizó una actualización PPO con 48 transiciones y el alumno dos actualizaciones con 48 etiquetas. La evaluación del alumno solo duró dos episodios de 0,48 s. En Handstand, el sostén de 3,155 s comenzó con una pose colocada y la entrada natural falló a los 0,700 s. Sentarse duró 6 s sin sostén válido y pronking 20 s con cero vuelos válidos. Se verificaron 5.200 subpasos entre ambos episodios. Los 12 cambios de entrada conservaron física y GRU del mismo trote y todavía falta entrenar y evaluar cuatro habilidades. La campaña completa y F1–F4 siguen pendientes. Los lanzamientos CUDA corresponden al usuario.",[source+"/Corte-del-Laboratorio.md",source+"/Informe-Proyecto-Final.pdf",drive]);
+}
+{
+  const s=slide("Alumno GRU en terreno irregular","Evaluación reservada en MuJoCo, 20 episodios por actor.");
+  text(s,"20/20 por actor, sin caídas ni contactos del cuerpo",68,214,1140,78,41,{bold:true,color:C.teal});
+  text(s,"Irregular · error medio de 0,1295 a 0,0857 m/s",68,333,1140,68,31);
+  text(s,"Pendiente de +5° · de 0,1312 a 0,1370 m/s",68,411,1140,68,31);
+  text(s,"Referencia PPO U4000 frente al alumno entrenado con el maestro U4300.",68,524,1130,75,26);
+  note(s,"Resultados reservados de destilación. Reproducir el video de desarrollo de 20 s y distinguirlo de los episodios reservados. La aceptación física sigue pendiente.",[source+"/Alumno-GRU-Episodios.csv",source+"/Demo-Alumno-GRU-Avance.mp4"]);
 }
 {
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");

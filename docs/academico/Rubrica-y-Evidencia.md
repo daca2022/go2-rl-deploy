@@ -30,3 +30,5 @@ La diapositiva 10 reúne referencias para las preguntas. Para mostrar el funcion
 ## Qué muestran los datos
 
 De 138 pares de evaluación, ambos actores aprobaron 94 y fallaron 34. E1 aprobó seis casos que E5 falló y E5 aprobó cuatro que E1 falló. Con masa y retardo, E1 conservó su margen en velocidad de avance. En terreno rugoso, E5 consiguió más aprobados. La comparación controla las transiciones y conserva una sola semilla de entrenamiento. La fecha, el alcance y las validaciones pendientes están en el [corte del laboratorio](Corte-del-Laboratorio.md).
+
+Para resultados y demostración del alumno, consulta los [episodios reservados](Alumno-GRU-Episodios.csv) y el [replay de avance de desarrollo](Demo-Alumno-GRU-Avance.mp4). La demostración se ejecutó en MuJoCo.

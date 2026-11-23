@@ -11,7 +11,7 @@
 \vspace{.35em}
 {\Large PPO y control articular de posición en MuJoCo\par}
 \vspace{.9em}
-{\color{gris}Robótica avanzada · Ciclo 2026-2 · 22 de noviembre de 2026\par}
+{\color{gris}Robótica avanzada · Ciclo 2026-2 · 23 de noviembre de 2026\par}
 
 \section{Introducción}
 Generar locomoción cuadrúpeda exige coordinar doce articulaciones, mantener el equilibrio durante los cambios de apoyo y seguir consignas de velocidad. Se implementó un controlador que combina una política entrenada con aprendizaje por refuerzo y realimentación proporcional-derivativa (PD). Se ensayó en MuJoCo \cite{todorov2012} con avance, retroceso, desplazamiento lateral y giro.
@@ -184,7 +184,7 @@ Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, P
 \noindent\textbf{Integración nominal de PPO y GRU.} Un diagnóstico CPU inicializado desde A2/P0 U2400 llevó tres de cuatro mundos al horizonte natural de 20 s, con bootstrap mediante observación terminal y reinicio selectivo de la GRU. La validación reservada sigue pendiente.
 
 
-\textbf{Maestro privilegiado y alumno.} Un maestro con 57 entradas completó una actualización PPO en dos mundos físicos, con 48 transiciones y 192 subpasos. El alumno A0/P0 recibió 47 observaciones, usó 48 etiquetas archivadas y completó dos actualizaciones de destilación. Otro proceso recargó el alumno y reprodujo sus acciones. La evaluación diagnóstica posterior cubrió dos episodios de 24 decisiones, 0,48 s cada uno, sin caída durante ese intervalo. La recolección oficial por episodios, el costo total medido y la evaluación reservada de 20 s siguen pendientes. Estos ensayos comprueban la cadena de aprendizaje y recarga, con la calidad de locomoción aún por evaluar.
+\textbf{Maestro privilegiado y alumno.} Un maestro con 57 entradas completó una actualización PPO en dos mundos físicos, con 48 transiciones y 192 subpasos. El alumno A0/P0 recibió 47 observaciones, usó 48 etiquetas archivadas y completó dos actualizaciones de destilación. Otro proceso recargó el alumno y reprodujo sus acciones. La evaluación diagnóstica posterior cubrió dos episodios de 24 decisiones, 0,48 s cada uno, sin caída durante ese intervalo. Esta prueba inicial comprueba la cadena de aprendizaje y recarga. El anexo del 23 de noviembre presenta la evaluación reservada de un alumno GRU posterior.
 
 \medskip
 \textbf{Handstand sobre las patas delanteras.} En MuJoCo CPU, el Go2 sostuvo durante 3,155 s una pose colocada como condición inicial, con control P0 constante y dinámica libre. El intento de entrada desde cuatro apoyos falló a los 0,700 s cuando ambas pantorrillas traseras tocaron el suelo. El evaluador rechazó el inicio colocado para acreditar la maniobra completa. Quedan por demostrar la entrada, el sostén y el retorno a cuatro apoyos en un mismo episodio. Un perfil posterior trasladó el 100 \% de la carga medida en los pies a las delanteras durante 0,100 s, con 14,7 mm de despeje trasero. Terminó por contacto delantero a los 1,815 s. Esta prueba estudia una habilidad candidata adicional.
@@ -197,6 +197,26 @@ Las seis combinaciones A0/A1/A2 con P0/T0 verificaron en CPU la construcción, P
 
 \medskip
 \textbf{Consulta del informe de campaña.} La vista del panel presenta una instantánea verificada del entrenamiento original A2/P0 y las seis combinaciones programadas. Conserva una de seis celdas entrenada, cero validaciones verificadas y selección pendiente. Los controles de lectura y acceso se comprobaron en CPU y en Chrome. El CSV y el resumen de evidencia documentan las cinco revisiones de la continuación. La validación reservada sigue pendiente.
+
+\newpage
+\section*{Anexo del alumno GRU · 23 de noviembre de 2026}
+El alumno A2/P0 se ajustó desde U4000 con etiquetas del maestro privilegiado U4300. Se compararon el alumno y la referencia PPO U4000 en 20 pares de 20 s, con cinco realizaciones por escenario. En cada actor, 20/20 episodios llegaron al horizonte sin caídas y sin contacto del cuerpo.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Escenario & U4000 & Alumno GRU \\
+\midrule
+Retroceso, giro y parada en plano & 0,0689 & 0,0661 \\
+Cambio de sentido lateral en plano & 0,1103 & 0,1099 \\
+Irregular reservado, avance y parada & 0,1295 & 0,0857 \\
+Pendiente de +5°, avance, retroceso y parada & 0,1312 & 0,1370 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent Error planar RMSE medio en m/s. La reducción fue mayor en irregular. En pendiente aumentó ligeramente el error aunque ambos actores completaron los cinco episodios. Esta evaluación corresponde al protocolo de destilación.
+\medskip
+
+\noindent En desarrollo, el mando del alumno regresó a consigna cero al perder la entrada y el desplazamiento longitudinal medido fue 4,96 cm con una meta de 5 cm en MuJoCo. El modo sombra se comprobó con mensajes de telemetría sintéticos. La aceptación en el robot físico sigue pendiente.
 
 \newpage
 \begingroup\small

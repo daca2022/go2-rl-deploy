@@ -43,3 +43,9 @@ El informe de campaña del panel conserva una instantánea verificada del entren
 - [Carpeta pública de Drive](https://drive.google.com/drive/folders/1S8uEebuWrVEXju7h-1b8J_P_9BeeqBDS)
 
 [Datos emparejados](Comparacion-U2400-U4000.csv) · [Evidencia](Evidencia-Comparacion-A2.json) · [Video en pendiente](Demo-U2400-U4000-Pendiente.mp4).
+
+## Alumno GRU en evaluación reservada · 23 de noviembre de 2026
+
+Ambos actores completaron 20 de 20 episodios reservados de 20 s sin caídas ni contacto del cuerpo. En irregular, el error planar medio bajó de 0,1295 a 0,0857 m/s con el alumno. En pendiente de +5° subió de 0,1312 a 0,1370 m/s. El resultado corresponde al protocolo reservado de destilación. La aceptación del robot físico sigue pendiente.
+
+[40 episodios emparejados](Alumno-GRU-Episodios.csv) · [Recibo público](Alumno-GRU-Reservada.json) · [Video de desarrollo](Demo-Alumno-GRU-Avance.mp4). En pruebas de desarrollo de MuJoCo, el mando registró consigna cero al soltar o perder la entrada y un avance de 4,96 cm al pedir 5 cm. El ensayo sombra usó telemetría sintética.

@@ -6,5 +6,13 @@
   "E5": {
     "path_relative_to_project": "outputs/runs/dc-seed7-a0-p0-training5-progressive-validation/evaluation/skill_episodes.jsonl",
     "sha256": "662bbf9a62e651c853824c34ac97ef00055dbf393a50d81d6ff0e3383e268178"
+  },
+  "alumno_gru_reservada": {
+    "scope": "reserved_simulation",
+    "episodes": 40,
+    "files": {
+      "Alumno-GRU-Episodios.csv": "8434e9b4e09f4d68ce9f68a699063c7102a8a0afb7281879dfdce77d687be933",
+      "Alumno-GRU-Reservada.json": "6f219ea0d85a65ec17c8ccd99df8c3bd8342e23559dc60d7d435cbe7c53cbe23"
+    }
   }
 }
