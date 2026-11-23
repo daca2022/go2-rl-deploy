@@ -65,6 +65,10 @@ Confirma que el tick avanza, llegan las 12 posiciones, velocidades y torque esti
 
 En shadow, el GRU calcula objetivos y los escribe en el CSV. Este flujo solo abre el suscriptor de `rt/lowstate`. Los objetivos pasivos asumen que el signo, cero y marco de IMU del SDK coinciden con el entrenamiento. Sirven para inspección inicial. El modo banco aplica el mapeo verificado del perfil.
 
+### Revisión del perfil por telemetría
+
+Con el Go2 quieto, ejecuta `python revisar_banco.py --iface eth10` en el Python del SDK. El programa toma tres segundos en modo observación y muestra los campos pendientes. Si el perfil está completo, compara la captura con los límites y la pose nominal del alumno. Usa `--csv RUTA` para revisar una captura guardada. El resultado corresponde a la telemetría y al perfil declarados. El encargado del banco verifica las mediciones, el soporte y el paro por separado.
+
 ## 3. Go2 físico, primer pulso A2 en banco
 
 Para probar los 12 objetivos reales, usa el Go2 sostenido de manera estable, patas libres y operador junto al mando de parada. Confirma primero la respuesta del paro físico y cómo responde el firmware al perder comandos en ese banco. Completa el perfil con datos de tu unidad y verifica articulaciones e IMU. Luego desactiva manualmente el controlador Sport según el procedimiento del fabricante. El script comprueba el resultado con MotionSwitcher y aborta si un servicio sigue activo. Cierra otros emisores de `rt/lowcmd`.
