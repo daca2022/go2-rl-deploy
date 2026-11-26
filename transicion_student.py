@@ -204,14 +204,20 @@ def mean_neutral_target(q, quat, blend):
     return np.mean(targets, axis=0)
 
 
-def trial(q, quat, output, variant, blend, view):
-    sim = StandingSimulation(q, quat)
+def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_target=None,
+          viewer_context=None, before_physics=None):
+    sim = simulation if simulation is not None else StandingSimulation(q, quat)
     d = sim.data
-    previous = q.copy()
-    wait_target = mean_neutral_target(q, quat, blend) if variant == "wait-mean" else sim.actor.q0
+    activation_time = float(d.time)
+    activation_q = d.qpos[sim.qids].copy()
+    previous = d.ctrl[sim.aids].copy()
+    if neutral_target is not None:
+        wait_target = neutral_target
+    else:
+        wait_target = mean_neutral_target(q, quat, blend) if variant == "wait-mean" else sim.actor.q0
     mode = "policy"
     transitions = []
-    blend_origin, blend_start = q.copy(), 0.
+    blend_origin, blend_start = previous.copy(), 0.
     stats = []
     max_tilt, max_jump = 0., 0.
     trunk = False
@@ -220,7 +226,9 @@ def trial(q, quat, output, variant, blend, view):
     status = "complete"
     tick = 0
     wall_start = time.perf_counter()
-    if view:
+    if viewer_context is not None:
+        context = viewer_context
+    elif view:
         from mujoco.viewer import launch_passive
         context = launch_passive(sim.model, d)
     else:
@@ -236,6 +244,7 @@ def trial(q, quat, output, variant, blend, view):
                 viewer.cam.trackbodyid = sim.base
                 viewer.cam.distance = 2.0
         for label, seconds, command in SCHEDULE:
+            phase_start = float(d.time)
             rotation = sim.orientation().copy()
             origin = d.qpos[:2].copy()
             y0 = yaw(rotation)
@@ -256,23 +265,32 @@ def trial(q, quat, output, variant, blend, view):
                     if command == ZERO and mode == "policy" and j*PERIOD >= .5 and np.linalg.norm(d.qvel[:2]) <= .08 and sim.tilt_deg() <= 15 and len(sim.contacts()["feet"]) >= 3:
                         mode = "wait"
                         blend_origin, blend_start = previous.copy(), tick*PERIOD
-                        transitions.append({"t_s": tick*PERIOD, "to": mode, "reason": "centered >=0.5 s, slow, upright, >=3 feet"})
+                        transitions.append({"t_s": activation_time+tick*PERIOD, "to": mode, "reason": "centered >=0.5 s, slow, upright, >=3 feet"})
                     elif command != ZERO and mode == "wait":
                         mode = "policy"
                         blend_origin, blend_start = previous.copy(), tick*PERIOD
-                        transitions.append({"t_s": tick*PERIOD, "to": mode, "reason": "nonzero command"})
+                        transitions.append({"t_s": activation_time+tick*PERIOD, "to": mode, "reason": "nonzero command"})
                 raw = sim.actor.step(d.qpos[3:7], d.qvel[3:6], d.qpos[sim.qids], d.qvel[sim.vids], command)
                 target = wait_target if mode == "wait" else raw
                 weight = 1. if variant == "direct" else min(1., (tick*PERIOD-blend_start)/blend)
                 applied = (1.-weight)*blend_origin + weight*target
                 jump = float(np.max(np.abs(np.degrees(applied-previous))))
                 if first is None:
-                    first = {"raw_delta_deg": np.degrees(raw-q).tolist(), "applied_delta_deg": np.degrees(applied-q).tolist()}
+                    first = {"raw_delta_deg": np.degrees(raw-activation_q).tolist(), "applied_delta_deg": np.degrees(applied-activation_q).tolist(),
+                             "q_before_rad": activation_q.tolist(), "raw_target_rad": raw.tolist(),
+                             "applied_target_rad": applied.tolist()}
                 previous = applied.copy()
                 max_jump = max(max_jump, jump)
                 stop_jump = max(stop_jump, jump)
                 with viewer.lock() if viewer is not None else nullcontext():
+                    if before_physics is not None:
+                        before_physics(tick * PERIOD)
                     fell, body, illegal, tilt = sim.physics(applied)
+                if tick == 0:
+                    first.update({"after_first_cycle_t_s":float(d.time),
+                                  "q_after_rad":d.qpos[sim.qids].tolist(),
+                                  "base_xyz_after_m":d.qpos[:3].tolist(),
+                                  "contacts_after":sim.contacts()})
                 max_tilt = max(max_tilt, tilt)
                 trunk |= body
                 nonfoot_all.update(illegal)
@@ -313,6 +331,7 @@ def trial(q, quat, output, variant, blend, view):
                 final_speed = float(np.mean(np.linalg.norm(np.array(final)[:,:2],axis=1)))
                 final_motion = float(np.mean(motion[-len(final):]))
                 stats.append({"maneuver":label,"duration_s":completed*PERIOD,"command":command,
+                    "start_s":phase_start,"end_s":float(d.time),
                     "local_displacement_m":displacement.tolist(),"yaw_delta_deg":math.degrees(turn),
                     "mean_body_velocity":avg.tolist(),"mean_planar_speed_m_s":float(np.mean(speeds)),
                     "final_1s_mean_planar_speed_m_s":final_speed,"final_1s_mean_joint_speed_norm_rad_s":final_motion,
@@ -328,6 +347,7 @@ def trial(q, quat, output, variant, blend, view):
         compute = [float(row["compute_ms"]) for row in csv.DictReader(f)]
     return {"variant":variant,"blend_s":0. if variant == "direct" else blend,
             "status":status,"duration_s":tick*PERIOD,"samples":tick,"simulated_hz":1/PERIOD,
+            "activation_time_s":activation_time,"final_time_s":float(d.time),
             "wall_elapsed_s":time.perf_counter()-wall_start,
             "compute_ms_median":float(np.median(compute)) if compute else None,
             "compute_ms_p95":float(np.percentile(compute,95)) if compute else None,

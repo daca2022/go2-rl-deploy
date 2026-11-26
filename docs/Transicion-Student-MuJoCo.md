@@ -56,3 +56,5 @@ En la captura de 1.393 muestras y 30 s, las tres referencias de primera acción 
 | Espera objetivo medio | 46 s | 0/0 | ninguno | 7/7 | 8/8 |
 
 La variante de espera con objetivo medio es una candidata de desarrollo simulada. Se ajustó y probó con la misma captura. Los resultados no establecen robustez fuera de ese caso, calibración física ni validez de la transición en el Go2 real.
+
+[Ensayo continuo FixStand → GRU sin reinicializar la física](FixStand-GRU-Continuo.md).
