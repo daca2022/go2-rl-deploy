@@ -2,6 +2,8 @@
 
 ## Alumno GRU en MuJoCo y Ethernet
 
+[Ensayo de transición desde una postura observada a la GRU en MuJoCo](docs/Transicion-Student-MuJoCo.md).
+
 Selecciona `student` en el panel o usa `--policy-update student`. El alumno completó 20/20 episodios reservados de 20 segundos sin caídas. El paquete incluye el actor TorchScript, los resultados en CSV, un video, y los comandos de simulación, observación y banco con el SDK. [Guía del alumno GRU](docs/Alumno-GRU.md) · [Mando, avance de 5 cm y SSH en sombra](docs/Teleoperacion-GRU.md) · [Video](docs/student/Go2-alumno-GRU-avance.mp4).
 Guía de puesta en marcha desde Ubuntu 22.04 · A2/P0 · GRU de 128
 
