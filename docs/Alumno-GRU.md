@@ -46,6 +46,8 @@ IFACE=enp3s0
   --csv "pruebas/student-shadow-$(date +%Y%m%d-%H%M%S).csv"
 ```
 
+[Lectura del mando oficial Unitree en shadow](Mando-Unitree-Shadow.md).
+
 Los modos de observación y sombra reciben `rt/lowstate`. El modo sombra calcula y guarda en CSV los objetivos del alumno sin enviar `rt/lowcmd`. Comprueba que avanza el tick, que las muestras son recientes y que IMU y articulaciones coinciden con los marcos del modelo.
 
 ### SSH por Ethernet

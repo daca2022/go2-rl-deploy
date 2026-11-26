@@ -3,6 +3,7 @@ import argparse
 import csv
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import signal
 import socket
 import time
@@ -10,7 +11,7 @@ import time
 import numpy as np
 from unitree_sdk2py.core.channel import ChannelFactoryInitialize
 
-from a2_dds import STATE_TOPIC, Latest, LowState_, MotorCommands, bounded_command_publisher, state_joints
+from a2_dds import STATE_TOPIC, CRC, Latest, LowState_, MotorCommands, bounded_command_publisher, state_joints
 from a2_policy import A2Policy, COMMANDS, JOINT_NAMES, KD, KP, PERIOD, POLICY_UPDATES, SDK_IDS, SIM_JOINT_RANGE, gravity_body, parse_policy_update
 
 SEND_PERIOD = .002
@@ -108,6 +109,86 @@ def capture(args, rx, encoder, actor):
             time.sleep(max(0., PERIOD - (time.monotonic() - cycle_started)) if stream else PERIOD)
     print(json.dumps({'mode': args.mode, 'policy_update': args.policy_update if actor else None,
                       'lowcmd_publishers_created': 0, 'csv': str(args.csv)}))
+
+
+
+def capture_remote(args, rx, actor):
+    """Read LowState, calculate and log hypothetical targets; no command endpoints."""
+    from remote_input import AXES, RemoteDecoder, RemoteStatistics
+
+    encoder = SimpleNamespace(crc=CRC())
+    decoder = RemoteDecoder()
+    stats = RemoteStatistics()
+    started = previous = last = None
+    samples = 0
+    periods, inference, ages = [], [], []
+    status, reason = "complete", None
+    summary_path = args.csv.with_suffix(".summary.json")
+    if summary_path.exists():
+        raise FileExistsError(summary_path)
+    with args.csv.open("x", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["pc_time_s","dds_tick","age_ms","cycle_period_ms","policy_ms",
+                         *AXES,"button_mask","buttons","remote_payload_hex","remote_status",
+                         "unchanged_payload_ms","cmd_vx","cmd_vy","cmd_yaw","imu_wxyz",
+                         "gyro_rad_s","q_sdk_in_actor_order_rad","dq_sdk_in_actor_order_rad_s",
+                         "tau_est_sdk_nm","target_rad_assuming_matching_frames"])
+        print("SHADOW_REMOTE_READY", flush=True)
+        try:
+            while started is None or time.monotonic()-started < args.seconds:
+                try:
+                    msg, stamp = rx.wait(lambda m, _: m.tick != last, 4. if started is None else .1)
+                except TimeoutError:
+                    status, reason = "failed", "lowstate_timeout_or_tick_stalled"
+                    break
+                selected = time.monotonic()
+                age = selected-stamp
+                if age > MAX_STATE_AGE or age < 0 or not np.isfinite(age):
+                    status, reason = "failed", "lowstate_stale"
+                    break
+                if started is None:
+                    started = selected
+                if selected-started >= args.seconds:
+                    break
+                last = msg.tick
+                q, dq, quat, gyro = inspect_state(msg, encoder)
+                sample = decoder.decode(msg.wireless_remote, selected)
+                policy_started = time.monotonic()
+                target = actor.step(quat, gyro, q, dq, sample.command)
+                policy_ms = (time.monotonic()-policy_started)*1000
+                gap = None if previous is None else (selected-previous)*1000
+                previous = selected
+                ages.append(age*1000)
+                inference.append(policy_ms)
+                if gap is not None:
+                    periods.append(gap)
+                stats.add(sample)
+                writer.writerow([selected-started,last,age*1000,gap,policy_ms,*sample.axes,
+                                 sample.button_mask,json.dumps(sample.buttons),sample.payload_hex,
+                                 sample.status,sample.unchanged_ms,*sample.command,quat.tolist(),gyro.tolist(),
+                                 q.tolist(),dq.tolist(),[msg.motor_state[i].tau_est for i in SDK_IDS],
+                                 target.tolist()])
+                file.flush()
+                samples += 1
+                time.sleep(max(0., PERIOD-(time.monotonic()-selected)))
+        except (ValueError, RuntimeError, TimeoutError) as exc:
+            status, reason = "failed", str(exc)
+        except KeyboardInterrupt:
+            status, reason = "interrupted", "operator_interrupt"
+    def timing(values):
+        return {"median":float(np.median(values)), "p95":float(np.percentile(values,95)),
+                "max":float(max(values))} if values else None
+    result = {"mode":"shadow","input":"wireless_remote","policy_update":args.policy_update,
+              "status":status,"reason":reason,"samples":samples,"requested_seconds":args.seconds,
+              "lowcmd_publishers_created":0,"sport_commands_sent":0,"mode_changes_sent":0,
+              "csv":str(args.csv),"summary":str(summary_path),
+              "nominal_period_ms":PERIOD*1000,"actual_period_ms":timing(periods),
+              "policy_ms":timing(inference),"lowstate_age_ms":timing(ages),**stats.summary()}
+    with summary_path.open("x") as file:
+        json.dump(result,file,indent=2)
+        file.write("\n")
+    print(json.dumps(result),flush=True)
+    return 0 if status=="complete" and samples else 1
 
 
 def bench(args, rx, encoder, actor, config):
@@ -218,8 +299,12 @@ def main():
     parser.add_argument('--command', choices=COMMANDS, default='forward')
     parser.add_argument('--policy-update', type=parse_policy_update, choices=POLICY_UPDATES, default=2000)
     parser.add_argument('--bench-profile', type=Path)
-    parser.add_argument('--commands-stdin', action='store_true', help='recibir teclas por stdin, solo en shadow')
+    inputs = parser.add_mutually_exclusive_group()
+    inputs.add_argument('--commands-stdin', action='store_true', help='recibir teclas por stdin, solo en shadow')
+    inputs.add_argument('--remote', action='store_true', help='leer wireless_remote, solo en shadow; sustituye --command')
     args = parser.parse_args()
+    if args.remote and args.mode != 'shadow':
+        parser.error('--remote solo está disponible en shadow')
     if args.iface == 'lo' or args.iface not in dict(socket.if_nameindex()).values():
         parser.error('Select the Go2 Ethernet interface')
     if not 0 < args.seconds <= (.5 if args.mode == 'bench' else 60.):
@@ -232,8 +317,10 @@ def main():
     actor = A2Policy(args.policy_update) if args.mode != 'observe' else None
     signal.signal(signal.SIGTERM, stop_on_signal)
     ChannelFactoryInitialize(0, args.iface)
-    encoder = MotorCommands()
     rx = Latest(STATE_TOPIC, LowState_)
+    if args.remote:
+        return capture_remote(args, rx, actor)
+    encoder = MotorCommands()
     rx.wait(lambda *_: True, 4.)
     if args.mode == 'bench':
         bench(args, rx, encoder, actor, config)
@@ -242,4 +329,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
