@@ -147,8 +147,10 @@ def hold(sim, output, viewer):
             "criterion":"3 s; no fall/nonfoot; four feet throughout last second; max deviation <=5 deg; last-second average base/joint speeds <=0.03 m/s and 0.3 rad/s"}
 
 
-def run_case(q, quat, out, case, neutral_target, blend, view):
+def run_case(q, quat, out, case, neutral_target, blend, view, *, command_segments=None):
     sim = StandingSimulation(q, quat)
+    durations = ({label: len(commands) * PERIOD for label, commands in command_segments}
+                 if command_segments is not None else {label: seconds for label, seconds, _ in SCHEDULE})
     factor = STIFFNESS_FACTOR if case=="stiffness" else 1.
     support = HoldStiffness(sim, factor)
     # Store the original zero-error, loaded geometry before changing any gains.
@@ -189,7 +191,7 @@ def run_case(q, quat, out, case, neutral_target, blend, view):
                     gain_restored_at = float(sim.data.time)
             walking=trial(q,quat,out/f"{case}-walk.csv","wait-mean",blend,False,
                           simulation=sim,neutral_target=neutral_target,viewer_context=nullcontext(viewer),
-                          before_physics=fade)
+                          before_physics=fade,command_segments=command_segments)
             if gain_restored_at is not None:
                 events.append({"t_s":gain_restored_at,"phase":"gain_handoff","event":"original_P0_restored"})
             for event in walking["transitions"]:
@@ -197,7 +199,7 @@ def run_case(q, quat, out, case, neutral_target, blend, view):
             for maneuver in walking["maneuvers"]:
                 observed=maneuver["direction_observed"]
                 ok=maneuver["zero_settled"] if observed is None else observed
-                ok=bool(ok and not maneuver["nonfoot_contacts"] and maneuver["duration_s"]==next(n for label,n,_ in SCHEDULE if label==maneuver["maneuver"]))
+                ok=bool(ok and not maneuver["nonfoot_contacts"] and math.isclose(maneuver["duration_s"],durations[maneuver["maneuver"]],abs_tol=1e-8))
                 events.append({"t_s":maneuver["start_s"],"phase":maneuver["maneuver"],"event":"start"})
                 events.append({"t_s":maneuver["end_s"],"phase":maneuver["maneuver"],"event":"passed" if ok else "failed"})
             events.append({"t_s":float(sim.data.time),"phase":"GRU","event":walking["status"]})
@@ -206,7 +208,7 @@ def run_case(q, quat, out, case, neutral_target, blend, view):
           np.array_equal(walking["first_activation"]["q_before_rad"], standing["final"]["q_rad"]) and
           np.array_equal(walking["first_activation"]["applied_target_rad"], standing["final"]["target_rad"]))
     passed=bool(walking and continuous_boundary and gain_restored_at is not None and support.restored() and walking["completed_without_nonfoot_contact"]
-                and walking["all_requested_directions_observed"] and walking["all_zero_segments_settled"] and math.isclose(sim.data.time,HOLD_S+sum(seconds for _, seconds, _ in SCHEDULE),abs_tol=1e-8))
+                and walking["all_requested_directions_observed"] and walking["all_zero_segments_settled"] and math.isclose(sim.data.time,HOLD_S+sum(durations.values()),abs_tol=1e-8))
     return {"case":case,"support_stiffness_factor_sim_only":factor,
             "diagnosis":diagnostic,"fixstand":standing,"activation_before":activation,
             "walking":walking,"events":sorted(events,key=lambda event:event["t_s"]),

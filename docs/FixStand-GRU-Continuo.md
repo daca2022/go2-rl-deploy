@@ -55,3 +55,5 @@ En la variante que pasa FixStand, el actor recién reiniciado recibe las observa
 El CSV original aporta q, dq, IMU, gyro, tick y estimaciones de torque. El SDK LowState también declara `foot_force` y `foot_force_est`, que quedaron fuera de esta captura. Sus unidades, orden y comportamiento requerirían comprobación en la unidad. La altura absoluta, el desplazamiento del cuerpo y la fuerza de contacto exacta provienen aquí de MuJoCo; en un ensayo físico necesitarían estimación o instrumentación. Las consignas internas de Sport no se conocen.
 
 Cada ejecución guarda `summary.json`, un JSON por caso y CSV de sostén y marcha. La traza de marcha usa tiempos absolutos de simulación y permite cotejar el último estado de FixStand con la primera decisión. Esta prueba de desarrollo corresponde a una única captura y una planta simulada. El sostén con parámetros de simulación no constituye una calibración de servos del Go2 ni un controlador para uso físico.
+
+[Reproducir las consignas grabadas con el mando](Reproducir-Mando-MuJoCo.md).

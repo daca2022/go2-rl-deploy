@@ -205,7 +205,7 @@ def mean_neutral_target(q, quat, blend):
 
 
 def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_target=None,
-          viewer_context=None, before_physics=None):
+          viewer_context=None, before_physics=None, command_segments=None):
     sim = simulation if simulation is not None else StandingSimulation(q, quat)
     d = sim.data
     activation_time = float(d.time)
@@ -223,6 +223,9 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
     trunk = False
     nonfoot_all = set()
     first = None
+    detailed = command_segments is not None
+    segments = command_segments if detailed else [(label, [command] * round(seconds / PERIOD))
+                                                   for label, seconds, command in SCHEDULE]
     status = "complete"
     tick = 0
     wall_start = time.perf_counter()
@@ -235,15 +238,16 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
         context = nullcontext(None)
     with output.open("x", newline="") as f, context as viewer:
         writer = csv.writer(f)
-        writer.writerow(["t_s","maneuver","controller","cmd_vx","cmd_vy","cmd_yaw","x_m","y_m","height_m",
+        header = ["t_s","maneuver","controller","cmd_vx","cmd_vy","cmd_yaw","x_m","y_m","height_m",
                          "vx_body_m_s","vy_body_m_s","yaw_rate_rad_s","tilt_deg","feet","nonfoot","trunk","fall",
-                         "raw_target_rad","applied_target_rad","q_rad","target_step_max_deg","compute_ms"])
+                         "raw_target_rad","applied_target_rad","q_rad","target_step_max_deg","compute_ms"]
+        writer.writerow(header + (["yaw_rad", "joint_speed_norm_rad_s", "blend_weight"] if detailed else []))
         if viewer is not None:
             with viewer.lock():
                 viewer.cam.type = mujoco.mjtCamera.mjCAMERA_TRACKING
                 viewer.cam.trackbodyid = sim.base
                 viewer.cam.distance = 2.0
-        for label, seconds, command in SCHEDULE:
+        for label, commands in segments:
             phase_start = float(d.time)
             rotation = sim.orientation().copy()
             origin = d.qpos[:2].copy()
@@ -255,7 +259,7 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
             stop_jump = 0.
             phase_nonfoot = set()
             phase_trunk = False
-            for j in range(round(seconds / PERIOD)):
+            for j, command in enumerate(commands):
                 if viewer is not None and not viewer.is_running():
                     status = "viewer_closed"
                     break
@@ -310,9 +314,10 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
                 weights.append(mode == "wait")
                 motion.append(float(np.linalg.norm(d.qvel[sim.vids])))
                 compute_ms = (time.perf_counter()-before)*1000
-                writer.writerow([round(d.time, 6),label,mode,*command,*d.qpos[:3],*v[:2],d.qvel[5],tilt,
+                row = [round(d.time, 6),label,mode,*command,*d.qpos[:3],*v[:2],d.qvel[5],tilt,
                                  mask,"|".join(illegal),int(body),int(fell),json.dumps(raw.tolist()),
-                                 json.dumps(applied.tolist()),json.dumps(d.qpos[sim.qids].tolist()),jump,compute_ms])
+                                 json.dumps(applied.tolist()),json.dumps(d.qpos[sim.qids].tolist()),jump,compute_ms]
+                writer.writerow(row + ([angle, motion[-1], weight] if detailed else []))
                 tick += 1
                 completed += 1
                 if viewer is not None:
@@ -322,6 +327,7 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
                     status = "fall"
                     break
             if completed:
+                command = commands[0]
                 heading = np.array([[math.cos(y0), -math.sin(y0)], [math.sin(y0), math.cos(y0)]])
                 displacement = heading.T @ (d.qpos[:2]-origin)
                 avg = np.mean(velocities, axis=0)
