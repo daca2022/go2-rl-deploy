@@ -147,7 +147,7 @@ def hold(sim, output, viewer):
             "criterion":"3 s; no fall/nonfoot; four feet throughout last second; max deviation <=5 deg; last-second average base/joint speeds <=0.03 m/s and 0.3 rad/s"}
 
 
-def run_case(q, quat, out, case, neutral_target, blend, view, *, command_segments=None):
+def run_case(q, quat, out, case, neutral_target, blend, view, *, command_segments=None, reactivation_s=None):
     sim = StandingSimulation(q, quat)
     durations = ({label: len(commands) * PERIOD for label, commands in command_segments}
                  if command_segments is not None else {label: seconds for label, seconds, _ in SCHEDULE})
@@ -191,7 +191,7 @@ def run_case(q, quat, out, case, neutral_target, blend, view, *, command_segment
                     gain_restored_at = float(sim.data.time)
             walking=trial(q,quat,out/f"{case}-walk.csv","wait-mean",blend,False,
                           simulation=sim,neutral_target=neutral_target,viewer_context=nullcontext(viewer),
-                          before_physics=fade,command_segments=command_segments)
+                          before_physics=fade,command_segments=command_segments,reactivation_s=reactivation_s)
             if gain_restored_at is not None:
                 events.append({"t_s":gain_restored_at,"phase":"gain_handoff","event":"original_P0_restored"})
             for event in walking["transitions"]:

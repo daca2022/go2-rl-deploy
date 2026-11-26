@@ -24,3 +24,5 @@ Por pulso se guarda su duración original y discretizada, magnitud media y máxi
 La captura de 30 s contiene cinco impulsos (retroceso, dos laterales y dos giros) separados por intervalos centrados. Los 1.500 ciclos de reproducción coinciden exactamente con la retención a 20 ms y conservan los cinco pulsos. La prueba completa de 33 s terminó sin caída ni contacto ajeno a pies. El retroceso se desplazó 4,3 mm en el sentido contrario; los dos laterales y los dos giros mostraron el signo pedido, con magnitudes muy pequeñas. Ningún pulso superó los umbrales anteriores. La espera se confirmó tras el primer y último pulso. Las pausas intermedias no alcanzaron el criterio antes de la próxima consigna. Esta grabación no incluye avance.
 
 La evidencia pertenece a simulación de desarrollo y no valida teleoperación física. El CSV físico y los archivos de posición originales se mantienen localmente.
+
+[Comparación de tiempos de reactivación espera → GRU](Comparar-Reactivacion-MuJoCo.md).

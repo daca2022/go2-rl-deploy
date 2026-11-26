@@ -205,7 +205,7 @@ def mean_neutral_target(q, quat, blend):
 
 
 def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_target=None,
-          viewer_context=None, before_physics=None, command_segments=None):
+          viewer_context=None, before_physics=None, command_segments=None, reactivation_s=None):
     sim = simulation if simulation is not None else StandingSimulation(q, quat)
     d = sim.data
     activation_time = float(d.time)
@@ -215,6 +215,10 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
         wait_target = neutral_target
     else:
         wait_target = mean_neutral_target(q, quat, blend) if variant == "wait-mean" else sim.actor.q0
+    reactivation_s = blend if reactivation_s is None else reactivation_s
+    if not math.isfinite(reactivation_s) or not PERIOD <= reactivation_s <= 5.:
+        raise ValueError("reactivation_s debe estar entre 0.02 y 5 segundos")
+    active_blend = blend
     mode = "policy"
     transitions = []
     blend_origin, blend_start = previous.copy(), 0.
@@ -268,15 +272,17 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
                     # In simulation only, wait for a low-speed, upright, supported state before returning to fixed nominal P0.
                     if command == ZERO and mode == "policy" and j*PERIOD >= .5 and np.linalg.norm(d.qvel[:2]) <= .08 and sim.tilt_deg() <= 15 and len(sim.contacts()["feet"]) >= 3:
                         mode = "wait"
+                        active_blend = blend
                         blend_origin, blend_start = previous.copy(), tick*PERIOD
                         transitions.append({"t_s": activation_time+tick*PERIOD, "to": mode, "reason": "centered >=0.5 s, slow, upright, >=3 feet"})
                     elif command != ZERO and mode == "wait":
                         mode = "policy"
+                        active_blend = reactivation_s
                         blend_origin, blend_start = previous.copy(), tick*PERIOD
                         transitions.append({"t_s": activation_time+tick*PERIOD, "to": mode, "reason": "nonzero command"})
                 raw = sim.actor.step(d.qpos[3:7], d.qvel[3:6], d.qpos[sim.qids], d.qvel[sim.vids], command)
                 target = wait_target if mode == "wait" else raw
-                weight = 1. if variant == "direct" else min(1., (tick*PERIOD-blend_start)/blend)
+                weight = 1. if variant == "direct" else min(1., (tick*PERIOD-blend_start)/active_blend)
                 applied = (1.-weight)*blend_origin + weight*target
                 jump = float(np.max(np.abs(np.degrees(applied-previous))))
                 if first is None:
@@ -352,6 +358,7 @@ def trial(q, quat, output, variant, blend, view, *, simulation=None, neutral_tar
     with output.open(newline="") as f:
         compute = [float(row["compute_ms"]) for row in csv.DictReader(f)]
     return {"variant":variant,"blend_s":0. if variant == "direct" else blend,
+            "reactivation_s":reactivation_s,
             "status":status,"duration_s":tick*PERIOD,"samples":tick,"simulated_hz":1/PERIOD,
             "activation_time_s":activation_time,"final_time_s":float(d.time),
             "wall_elapsed_s":time.perf_counter()-wall_start,

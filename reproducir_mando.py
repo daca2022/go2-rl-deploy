@@ -28,6 +28,7 @@ def timeline(path):
     relative = times-times[0]
     ticks = np.arange(math.ceil(relative[-1]/PERIOD))*PERIOD
     indices = np.searchsorted(relative,ticks,side="right")-1
+    durations = np.diff(relative,append=relative[-1])
     directions = np.sign(values).astype(int)
     raw_segments = []
     group_ids = np.empty(len(rows),dtype=int)
@@ -44,7 +45,8 @@ def timeline(path):
         group_ids[first:last+1] = len(raw_segments)
         raw_segments.append({"label":label,"sign":[int(value) for value in sign],"source_start_s":float(relative[first]),
                              "source_end_s":float(relative[last+1] if last+1<len(rows) else relative[last]),
-                             "source_rows":len(members)})
+                             "source_rows":len(members),
+                             "integral_requested_source":dict(zip(AXES,np.sum(values[members]*durations[members,None],axis=0).tolist()))})
     commands = [tuple(row) for row in values[indices].tolist()]
     segments = []
     sampled_labels = []
@@ -72,6 +74,18 @@ def trace_window(rows, prior):
             "accumulated_abs_yaw_deg":float(np.degrees(np.abs(np.diff(yaws)).sum()))}
 
 
+def motion_diagnostics(rows):
+    nonfoot = sorted({name for row in rows for name in row["nonfoot"].split("|") if name})
+    fall = any(int(row["fall"]) for row in rows)
+    tilt = max(float(row["tilt_deg"]) for row in rows)
+    contacts = [len([foot for foot in row["feet"].split("|") if foot]) for row in rows]
+    return {"max_target_step_deg":max(float(row["target_step_max_deg"]) for row in rows),
+            "max_tilt_deg":tilt, "nonfoot_contacts":nonfoot,
+            "trunk_contact":any(int(row["trunk"]) for row in rows), "fall":fall,
+            "min_feet_at_decision":min(contacts), "max_feet_at_decision":max(contacts),
+            "instability_observed":bool(fall or nonfoot or tilt>15.)}
+
+
 def center_details(rows, prior, phase):
     details = trace_window(rows,prior)
     stable_at = None
@@ -87,6 +101,9 @@ def center_details(rows, prior, phase):
         if speed<=.03 and yaw_speed<=.05 and joint_speed<=.3:
             stable_at = i
             break
+    details.update(motion_diagnostics(rows))
+    details["wait_result"] = ("instability_observed" if details["instability_observed"] else
+                              "stable_confirmed" if stable_at is not None else "not_confirmed_in_recorded_interval")
     details["published_end_monitor_pass"] = phase["zero_settled"]
     details["fixed_wait_stable_for_1s_before_next_pulse"] = stable_at is not None
     details["seconds_to_confirm_stable_wait"] = (float(rows[stable_at]["t_s"])-float(prior["t_s"])
@@ -121,7 +138,7 @@ def pulse_reports(record, timeline_data, rows):
         displacement = phase["local_displacement_m"]
         rotation = phase["yaw_delta_deg"]
         actual = [*displacement, math.radians(rotation)]
-        requested = {axis:{"signed_response":actual[j]*sign,
+        requested = {axis:{"actual_signed":actual[j],"signed_response":actual[j]*sign,
                            "in_requested_direction":bool(actual[j]*sign>0.),
                            "published_threshold_pass":bool(actual[j]*sign>(.05 if j==2 else .02))}
                      for j,(axis,sign) in enumerate(zip(AXES,segment["sign"])) if sign}
@@ -131,6 +148,8 @@ def pulse_reports(record, timeline_data, rows):
                        "mean_body_velocity":phase["mean_body_velocity"]})
         _, pulse = grouped[name]
         pulse_commands = np.array([[float(row[key]) for key in AXES] for row in pulse])
+        report["integral_requested_at_50hz"] = dict(zip(AXES,(np.sum(pulse_commands,axis=0)*PERIOD).tolist()))
+        report.update(motion_diagnostics(pulse))
         report["mean_recorded_command_at_50hz"] = dict(zip(AXES,np.mean(pulse_commands,axis=0).tolist()))
         report["peak_abs_recorded_command_at_50hz"] = dict(zip(AXES,np.max(np.abs(pulse_commands),axis=0).tolist()))
         report["last_applied_blend_weight"] = float(pulse[-1]["blend_weight"])
@@ -145,35 +164,25 @@ def pulse_reports(record, timeline_data, rows):
     return reports
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--calibration",type=Path,required=True,help="Primera captura de pie")
-    parser.add_argument("--initial",type=Path,required=True,help="Segunda captura de pie")
-    parser.add_argument("--remote-csv",type=Path,required=True,help="Registro del mando en shadow")
-    parser.add_argument("--out",type=Path,required=True,help="Directorio nuevo")
-    parser.add_argument("--view",action="store_true")
-    args = parser.parse_args()
-    q1, imu1, capture1 = read_capture(args.calibration)
-    target = mean_neutral_target(q1, imu1, BLEND)
-    q2, imu2, capture2 = read_capture(args.initial)
-    data = timeline(args.remote_csv)
-    args.out.mkdir(parents=True,exist_ok=False)
-    with (args.out/"consignas_50hz.csv").open("x",newline="") as f:
+def run_recording(q2, imu2, capture1, capture2, target, data, out, view=False, reactivation_s=BLEND):
+    out.mkdir(parents=True,exist_ok=False)
+    with (out/"consignas_50hz.csv").open("x",newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["decision_time_s","source_pc_time_s","source_row_zero_based","segment",*AXES])
         for tick, index, label, command in zip(data["ticks"],data["indices"],data["labels"],data["commands"]):
             writer.writerow([tick,data["times"][index],index,label,*command])
-    record = run_case(q2,imu2,args.out,"stiffness",target,BLEND,args.view,command_segments=data["segments"])
+    record = run_case(q2,imu2,out,"stiffness",target,BLEND,view,command_segments=data["segments"],reactivation_s=reactivation_s)
     walking = record["walking"]
     matches = None
     reports = []
     if walking:
-        with (args.out/"stiffness-walk.csv").open(newline="") as file:
+        with (out/"stiffness-walk.csv").open(newline="") as file:
             rows = list(csv.DictReader(file))
         commands = [tuple(float(row[key]) for key in AXES) for row in rows]
         matches = commands==data["commands"][:len(rows)]
         reports = pulse_reports(record,data,rows)
     summary = {"scope":"simulation_only_recorded_remote",
+               "reactivation_s":reactivation_s,"initial_blend_s":BLEND,"return_to_wait_blend_s":BLEND,
                "calibration_capture_sha256":capture1["csv_sha256"],
                "initial_capture_sha256":capture2["csv_sha256"],
                "remote_csv_sha256":data["sha256"],
@@ -188,7 +197,26 @@ def main():
                "full_replay_completed":bool(walking and walking["samples"] == len(data["ticks"]) and walking["status"] == "complete"),
                "frozen_wait_target_rad":target.tolist(),
                "continuous_case":record,"pulses":reports}
-    (args.out/"summary.json").write_text(json.dumps(summary,indent=2)+"\n")
+    (out/"summary.json").write_text(json.dumps(summary,indent=2)+"\n")
+    return summary
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--calibration",type=Path,required=True,help="Primera captura de pie")
+    parser.add_argument("--initial",type=Path,required=True,help="Segunda captura de pie")
+    parser.add_argument("--remote-csv",type=Path,required=True,help="Registro del mando en shadow")
+    parser.add_argument("--out",type=Path,required=True,help="Directorio nuevo")
+    parser.add_argument("--view",action="store_true")
+    parser.add_argument("--reactivation-s",type=float,choices=(.5,.2,.1),default=.5)
+    args = parser.parse_args()
+    q1, imu1, capture1 = read_capture(args.calibration)
+    target = mean_neutral_target(q1, imu1, BLEND)
+    q2, imu2, capture2 = read_capture(args.initial)
+    data = timeline(args.remote_csv)
+    summary = run_recording(q2,imu2,capture1,capture2,target,data,args.out,args.view,args.reactivation_s)
+    record = summary["continuous_case"]
+    reports = summary["pulses"]
     print("FixStand:",record["fixstand"]["status"])
     print("Tiempo simulado:",record["physics_time_s"])
     print("Pulsos medidos:",len([p for p in reports if p["status"]=="measured"]))
