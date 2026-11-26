@@ -11,7 +11,7 @@
 \vspace{.35em}
 {\Large PPO y control articular de posición en MuJoCo\par}
 \vspace{.9em}
-{\color{gris}Robótica avanzada · Ciclo 2026-2 · 23 de noviembre de 2026\par}
+{\color{gris}Robótica avanzada · Ciclo 2026-2 · 26 de noviembre de 2026\par}
 
 \section{Introducción}
 Generar locomoción cuadrúpeda exige coordinar doce articulaciones, mantener el equilibrio durante los cambios de apoyo y seguir consignas de velocidad. Se implementó un controlador que combina una política entrenada con aprendizaje por refuerzo y realimentación proporcional-derivativa (PD). Se ensayó en MuJoCo \cite{todorov2012} con avance, retroceso, desplazamiento lateral y giro.
@@ -217,6 +217,31 @@ Pendiente de +5°, avance, retroceso y parada & 0,1312 & 0,1370 \\
 \medskip
 
 \noindent En desarrollo, el mando del alumno regresó a consigna cero al perder la entrada y el desplazamiento longitudinal medido fue 4,96 cm con una meta de 5 cm en MuJoCo. El modo sombra se comprobó con mensajes de telemetría sintéticos. La aceptación en el robot físico sigue pendiente.
+
+\newpage
+\section*{Anexo de continuidad y pulsos del GRU · 26 de noviembre de 2026}
+En desarrollo de MuJoCo CPU, el sostén FixStand con P0 fijo falló por contacto de pantorrillas. Una alternativa de sostén simulado permitió completar 49 s continuos en dos capturas iniciales, con 7/7 sentidos y 8/8 esperas, sin caídas, contacto corporal ni reinicio de la física. Las capturas son condiciones iniciales de diagnóstico, no validación física.
+
+Se reprodujeron cinco pulsos de mando de 0,34--0,44 s respetando sus consignas a 50 Hz. La primera comparación varió solo la reactivación de espera a GRU: 0,50, 0,20 y 0,10 s. La última obtuvo 5/5 sentidos correctos y 2/5 umbrales, frente a 4/5 y 0/5 con 0,50 s. Una segunda comparación de 11 variantes mantuvo 0,10 s. La candidata conserva la memoria recurrente y los pesos y compara el efecto del historial y la fase. El desplazamiento o giro firmado durante cada pulso fue:
+\begin{center}\small
+\begin{tabular}{lrrr}
+\toprule
+Movimiento & Solicitado & Ref. 0,10 s & Candidata \\
+\midrule
+Retroceso (cm) & $-4,82$ & $-0,056$ & $-0,759$ \\
+Izquierda (cm) & $+6,80$ & $+0,808$ & $+0,835$ \\
+Derecha (cm) & $-7,14$ & $-0,119$ & $-0,540$ \\
+Giro izquierdo (°) & $+4,64$ & $+3,74$ & $+3,09$ \\
+Giro derecho (°) & $-5,50$ & $-4,84$ & $-4,32$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{center}
+\includegraphics[width=.85\linewidth]{Respuesta-Pulsos-GRU.png}
+
+\footnotesize Respuesta en sentido solicitado e integral de velocidad realizada durante cada pulso; datos de desarrollo simulados.
+\end{center}
+La candidata completó el protocolo largo con 7/7 maniobras y 8/8 esperas sin caídas ni contactos ajenos a los pies. Los pulsos cortos conservaron 5/5 signos y 2/5 umbrales; se confirmaron solo 2/5 esperas, sin inestabilidad observada en los tres intervalos restantes. Los saltos articulares dentro del pulso aumentaron y algunos frenados presentaron más deriva. Por tanto, la mejora del retroceso y laterales no establece precisión corta (todos inferiores a 1 cm), generalización ni aceptación física. No se contabiliza como evaluación reservada.
 
 \newpage
 \begingroup\small

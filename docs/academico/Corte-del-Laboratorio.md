@@ -1,6 +1,6 @@
 # Estado verificado del laboratorio Go2
 
-**Corte del 18 de noviembre de 2026.** La entrega corresponde a simulación en MuJoCo. Las demostraciones y revisiones de desarrollo se mantienen separadas de la validación reservada.
+**Corte del 26 de noviembre de 2026.** La entrega corresponde a simulación en MuJoCo. Las demostraciones y revisiones de desarrollo se mantienen separadas de la validación reservada.
 
 | Evidencia | Resultado al corte |
 |---|---|
@@ -49,3 +49,11 @@ El informe de campaña del panel conserva una instantánea verificada del entren
 Ambos actores completaron 20 de 20 episodios reservados de 20 s sin caídas ni contacto del cuerpo. En irregular, el error planar medio bajó de 0,1295 a 0,0857 m/s con el alumno. En pendiente de +5° subió de 0,1312 a 0,1370 m/s. El resultado corresponde al protocolo reservado de destilación. La aceptación del robot físico sigue pendiente.
 
 [40 episodios emparejados](Alumno-GRU-Episodios.csv) · [Recibo público](Alumno-GRU-Reservada.json) · [Video de desarrollo](Demo-Alumno-GRU-Avance.mp4). En pruebas de desarrollo de MuJoCo, el mando registró consigna cero al soltar o perder la entrada y un avance de 4,96 cm al pedir 5 cm. El ensayo sombra usó telemetría sintética.
+
+## Transición continua y pulsos del alumno GRU · 26 de noviembre de 2026
+
+Pruebas de **desarrollo en MuJoCo CPU**, separadas de los 40 episodios reservados. FixStand con P0 fijo falló por contacto de pantorrillas. La alternativa de sostén simulado permitió la transición continua a GRU con 7/7 maniobras de tres segundos y 8/8 esperas en dos capturas iniciales, sin reiniciar la física. No se verifica el sostén ni la marcha en el hardware.
+
+La reproducción de cinco pulsos originales del mando (1.500 ciclos a 50 Hz después de FixStand) completó 33 s sin caídas ni contacto ajeno a los pies. Al reducir solo la reactivación de 0,50 a 0,10 s, los signos correctos pasaron de 4/5 a 5/5 y los umbrales de 0/5 a 2/5. En una comparación posterior de 11 variantes con reactivación fija de 0,10 s, el historial del objetivo aplicado y la sincronización de fase conservaron los cinco sentidos y el protocolo de 49 s (7/7 y 8/8). Retroceso −0,056→−0,759 cm, lateral izquierdo +0,808→+0,835 cm y derecho −0,119→−0,540 cm. Los dos giros redujeron su amplitud. Los saltos de objetivo dentro del pulso aumentaron y en algunos casos hubo más movimiento tras soltar el mando. Solo 2/5 esperas cortas quedaron confirmadas; tres intervalos insuficientes no representan inestabilidad observada. La precisión de desplazamiento corto sigue sin demostrarse.
+
+[Datos agregados por pulso](Pulsos-GRU-Desarrollo.csv) · [Resumen](Pulsos-GRU-Desarrollo.json) · [Figura](Respuesta-Pulsos-GRU.png). No se publican las capturas originales del mando ni telemetría física. No se cambia la selección reservada ni se reclama aceptación física.

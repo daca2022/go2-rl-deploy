@@ -47,3 +47,7 @@ El constructor editable de la presentación es Construir-Presentacion.mjs. Usa e
 ## Alumno GRU
 
 [Datos de 40 episodios reservados](Alumno-GRU-Episodios.csv) · [Recibo público](Alumno-GRU-Reservada.json) · [Demostración de avance en MuJoCo](Demo-Alumno-GRU-Avance.mp4) · [Guía de mando y sombra](../Teleoperacion-GRU.md).
+
+## Desarrollo: transición y pulsos cortos
+
+[Resultados agregados](Pulsos-GRU-Desarrollo.csv) · [Resumen](Pulsos-GRU-Desarrollo.json) · [Figura](Respuesta-Pulsos-GRU.png). Pruebas en MuJoCo, no aceptación física ni nueva evaluación reservada.

@@ -172,6 +172,15 @@ function label(s,title,body,x,y,w) {
   note(s,"Resultados reservados de destilación. Reproducir el video de desarrollo de 20 s y distinguirlo de los episodios reservados. La aceptación física sigue pendiente.",[source+"/Alumno-GRU-Episodios.csv",source+"/Demo-Alumno-GRU-Avance.mp4"]);
 }
 {
+  const s=slide("Respuesta a pulsos cortos del mando","Desarrollo en MuJoCo, no evaluación reservada ni prueba física.");
+  await pic(s,"Respuesta-Pulsos-GRU.png",65,204,735,357,"Comparación de traslación en tres pulsos cortos");
+  text(s,"7/7 maniobras\n8/8 esperas",852,233,335,100,36,{bold:true,color:C.teal});
+  text(s,"49 s sin caídas ni contacto corporal",852,350,340,80,26);
+  text(s,"Pulsos: 5/5 sentidos; solo 2/5 alcanzan el umbral",852,457,340,88,24);
+  text(s,"Mejora parcial: la traslación todavía es inferior a 1 cm.",65,584,1150,55,24,{color:C.quiet});
+  note(s,"Anexo de desarrollo. La comparación conserva los cinco pulsos y los pesos. Retroceso de 0,056 a 0,759 cm; derecha de 0,119 a 0,540 cm. Algunos frenados y saltos articulares empeoraron. La aceptación física está pendiente.",[source+"/Pulsos-GRU-Desarrollo.csv",source+"/Pulsos-GRU-Desarrollo.json"]);
+}
+{
   const s=slide("Referencias y reproducibilidad","Material de consulta para preguntas.");
   const refs=[
     "Todorov, Erez y Tassa (2012) · MuJoCo y dinámica de contactos",
